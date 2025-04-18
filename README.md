@@ -12,14 +12,14 @@ A **feature-rich**, *highly customizable* horizontal calendar widget for Flutter
 ## ✨ Key Features
 
 - **4 Built-in Styles**
-  - Standard
-    ![standard](https://github.com/user-attachments/assets/e99e3a26-9341-4b3b-a904-b4910468def1)
-  - Outlined
-    ![Outlined](https://github.com/user-attachments/assets/9cc509a9-9aa1-4467-9069-41f4fec47d80)
-  - Minimal
-    ![Minimal](https://github.com/user-attachments/assets/8c7d25bc-1d2b-40f2-bab4-58001f5b28a9)
-  - Elevated
-    ![Elevated](https://github.com/user-attachments/assets/179644f1-057c-44dd-ab34-4b79aaff5381)
+## Display Styles 🎨
+
+| Style        | Preview                                                                                                                                     |
+|--------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| **Standard** | <img src="https://github.com/user-attachments/assets/07b6ed0a-878b-408f-9f0c-758dff22c806" width="200" height="150" alt="Standard Style" /> |
+| **Outlined** | <img src="https://github.com/user-attachments/assets/f02deb5f-7896-42f7-9a87-76e51e242ef0" width="200" height="150" alt="Outlined Style" /> |
+| **Minimal**  | <img src="https://github.com/user-attachments/assets/e7580224-08bf-4d72-914e-5497ba8db19d" width="200" height="150" alt="Minimal Style" />  |
+| **Elevated** | <img src="https://github.com/user-attachments/assets/9a7e7a88-3253-4eb4-9459-7cfdc45a0762" width="200" height="150" alt="Elevated Style" /> |
 
 - **Flexible Date Selection**
 - **Month Navigation Controls**
@@ -31,7 +31,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  horizontal_weekly_calendar: ^0.1.0
+  horizontal_weekly_calendar: ^1.0.0
 ```
 
 ## 💡 Quick Start
@@ -101,5 +101,5 @@ Contributions are welcome! Please follow these steps:
 ---
 
 **Crafted with ❤️ by github.com/ahmedzaeem**
-```
+
 
