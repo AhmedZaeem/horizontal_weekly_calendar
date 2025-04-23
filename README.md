@@ -1,8 +1,7 @@
 # 📅 Horizontal Weekly Calendar
 
 # Support my work!
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-4B0082?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://www.buymeacoffee.com/ahmedzaeem)
-
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-4B0082?style=for-the-badge&logo=buymeacoffee&logoColor=white)](https://www.buymeacoffee.com/ahmedzaeem)
 
 ## 🌟 Project Overview
 
@@ -34,7 +33,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  horizontal_weekly_calendar: ^0.1.0
+  horizontal_weekly_calendar: ^1.0.1
 ```
 
 ## 💡 Quick Start
@@ -104,5 +103,4 @@ Contributions are welcome! Please follow these steps:
 ---
 
 **Crafted with ❤️ by github.com/ahmedzaeem**
-```
 

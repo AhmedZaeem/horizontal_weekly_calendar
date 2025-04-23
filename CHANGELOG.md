@@ -1,8 +1,18 @@
 # Changelog
 
-## [1.0.0] - 2025-04-18
+## [1.0.1] - 2025-04-23
 
-### 🚀 Initial Release
+
+#### Documentation
+- **Added a full Documentation to the package**
+#### Example project
+- **Added an Example to the package**
+#### General bug fixes
+- **General bug fixes**
+- Changed min SDK to 3
+
+## [1.0.0] - 2025-04-23
+
 
 #### Features
 - **Horizontal Weekly Calendar Widget** introduced

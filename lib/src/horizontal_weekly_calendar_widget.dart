@@ -1,46 +1,96 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// Defines visual variations of the horizontal calendar
 enum HorizontalCalendarType {
+  /// Default circular day indicators
   standard,
+
+  /// Outlined containers with border
   outlined,
+
+  /// Simplified text-based display
   minimal,
+
+  /// Material-elevated containers
   elevated,
 }
 
+/// Represents days of the week with ISO 8601 numbering (Monday = 1)
 enum Weekday {
+  /// Sets the first day of the week to monday
   monday(1),
+
+  /// Sets the first day of the week to Tuesday
   tuesday(2),
+
+  /// Sets the first day of the week to Wednesday
   wednesday(3),
+
+  /// Sets the first day of the week to Thursday
   thursday(4),
+
+  /// Sets the first day of the week to Friday
   friday(5),
+
+  /// Sets the first day of the week to Saturday
   saturday(6),
+
+  /// Sets the first day of the week to Sunday
   sunday(7);
 
+  /// Gets the value of the day
   final int value;
   const Weekday(this.value);
 
+  /// Converts DateTime.weekday (1-7) to Weekday enum
   static Weekday fromDateTime(int weekday) {
     return Weekday.values.firstWhere((w) => w.value == weekday);
   }
 }
 
+/// Contains all visual styling parameters for the calendar
 class HorizontalCalendarStyle {
+  /// Style for month/year header text
   final TextStyle monthHeaderStyle;
+
+  /// Style for weekday abbreviation labels
   final TextStyle dayNameStyle;
+
+  /// Base style for day numbers
   final TextStyle dayNumberStyle;
+
+  /// Style for selected day numbers
   final TextStyle selectedDayTextStyle;
+
+  /// Style for non-selected days in current month
   final TextStyle inactiveDayTextStyle;
 
+  /// Primary color for selected states
   final Color activeDayColor;
+
+  /// Background color for day indicators
   final Color dayIndicatorColor;
+
+  /// Diameter of day indicator circles
   final double dayIndicatorSize;
+
+  /// Custom border for day indicators
   final Border? dayIndicatorBorder;
+
+  /// Shadow effect for elevated variants
   final BoxShadow? dayIndicatorShadow;
+
+  /// Enables particle effects on selection (if implemented)
   final bool showParticles;
+
+  /// Duration for selection animations
   final Duration selectionAnimationDuration;
+
+  /// Curve for selection animations
   final Curve selectionAnimationCurve;
 
+  /// Creates a style configuration for the calendar
   const HorizontalCalendarStyle({
     this.monthHeaderStyle =
         const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -60,23 +110,54 @@ class HorizontalCalendarStyle {
   });
 }
 
+/// A horizontally scrollable weekly calendar widget with multiple visual styles
 class HorizontalWeeklyCalendar extends StatefulWidget {
+  /// Initial displayed month
   final DateTime initialDate;
+
+  /// Currently selected date
   final DateTime selectedDate;
+
+  /// Callback when user selects a date
   final ValueChanged<DateTime> onDateSelected;
+
+  /// Callback when calendar advances to next month
   final VoidCallback onNextMonth;
+
+  /// Callback when calendar returns to previous month
   final VoidCallback onPreviousMonth;
+
+  /// Visual variant of the calendar
   final HorizontalCalendarType calendarType;
+
+  /// Complete styling configuration
   final HorizontalCalendarStyle calendarStyle;
+
+  /// Custom duration for month transition animations
   final Duration? animationDuration;
+
+  /// Custom curve for month transition animations
   final Curve? animationCurve;
+
+  /// Toggles month header visibility
   final bool showMonthHeader;
+
+  /// Custom icon for previous month navigation
   final IconData? previousMonthIcon;
+
+  /// Custom icon for next month navigation
   final IconData? nextMonthIcon;
+
+  /// Color for navigation icons
   final Color? iconColor;
+
+  /// Override default week starting day
   final Weekday? startingDay;
+
+  /// Global toggle for all animations
   final bool enableAnimations;
 
+  /// Default constructor for standard calendar
   const HorizontalWeeklyCalendar({
     super.key,
     required this.initialDate,
@@ -96,6 +177,7 @@ class HorizontalWeeklyCalendar extends StatefulWidget {
     this.enableAnimations = true,
   });
 
+  /// Preconfigured constructor for outlined variant
   const HorizontalWeeklyCalendar.outlined({
     super.key,
     required this.initialDate,
@@ -114,6 +196,7 @@ class HorizontalWeeklyCalendar extends StatefulWidget {
     this.enableAnimations = true,
   }) : calendarType = HorizontalCalendarType.outlined;
 
+  /// Preconfigured constructor for minimal variant
   const HorizontalWeeklyCalendar.minimal({
     super.key,
     required this.initialDate,
@@ -141,6 +224,7 @@ class HorizontalWeeklyCalendar extends StatefulWidget {
       _HorizontalWeeklyCalendarState();
 }
 
+/// State class for calendar widget handling layout and interactions
 class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
     with TickerProviderStateMixin {
   late PageController _pageController;
@@ -148,11 +232,13 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
   late AnimationController _selectionController;
   late DateTime _currentDate;
 
+  /// Generates week lists based on current month and starting day
   List<List<DateTime>> _generateWeeks(DateTime date) {
     final firstDayOfMonth = DateTime(date.year, date.month, 1);
     final lastDayOfMonth = DateTime(date.year, date.month + 1, 0);
 
     if (widget.startingDay != null) {
+      // Custom week start logic
       int daysToSubtract =
           (firstDayOfMonth.weekday - widget.startingDay!.value) % 7;
       DateTime weekStart =
@@ -171,6 +257,7 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
         });
       });
     } else {
+      // Default month week generation
       final int totalDays = lastDayOfMonth.day;
       final int numberOfWeeks = (totalDays + 6) ~/ 7;
       List<List<DateTime>> weeks = [];
@@ -188,6 +275,7 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
     }
   }
 
+  /// Finds the week index containing a specific date
   int _findWeekIndex(List<List<DateTime>> weeks, DateTime date) {
     for (int i = 0; i < weeks.length; i++) {
       if (weeks[i].any((day) => _isSameDay(day, date))) return i;
@@ -195,6 +283,7 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
     return 0;
   }
 
+  /// Date comparison helper
   bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
 
@@ -226,6 +315,7 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
     }
   }
 
+  /// Builds individual day indicator based on current style
   Widget _buildDayIndicator(DateTime day, bool isSelected) {
     final isMinimal = widget.calendarType == HorizontalCalendarType.minimal;
     final textStyle = isSelected
@@ -324,6 +414,7 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
     }
   }
 
+  /// Handles date selection logic and month transitions
   void _handleDaySelection(DateTime day) {
     widget.onDateSelected(day);
     final selectedMonth = DateTime(day.year, day.month);
@@ -354,6 +445,7 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
     }
   }
 
+  /// Builds the month header with navigation controls
   Widget _buildMonthHeader() {
     final isMinimal = widget.calendarType == HorizontalCalendarType.minimal;
 
@@ -438,7 +530,6 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
             itemBuilder: (context, index) {
               return LayoutBuilder(
                 builder: (context, constraints) {
-                  // 🆕 Calculate equal width for all days
                   final dayWidth = constraints.maxWidth / 7;
                   return AnimatedSwitcher(
                     duration: widget.animationDuration ??
@@ -446,12 +537,10 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
                     switchInCurve: widget.animationCurve ?? Curves.easeInOut,
                     child: Row(
                       key: ValueKey(_weeks[index]),
-                      mainAxisAlignment: MainAxisAlignment
-                          .start, // 🆕 Changed from spaceEvenly
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: _weeks[index].map((day) {
                         final isSelected = _isSameDay(day, widget.selectedDate);
                         return SizedBox(
-                          // 🆕 Added fixed width container
                           width: dayWidth,
                           child: GestureDetector(
                             onTap: () => _handleDaySelection(day),
