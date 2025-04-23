@@ -1,7 +1,7 @@
 # 📅 Horizontal Weekly Calendar
 
 # Support my work!
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-4B0082?style=for-the-badge&logo=buymeacoffee&logoColor=black)](buymeacoffee.com/ahmedzaeem)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-4B0082?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://www.buymeacoffee.com/ahmedzaeem)
 
 
 ## 🌟 Project Overview
