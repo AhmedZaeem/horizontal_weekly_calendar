@@ -122,10 +122,10 @@ class HorizontalWeeklyCalendar extends StatefulWidget {
   final ValueChanged<DateTime> onDateSelected;
 
   /// Callback when calendar advances to next month
-  final VoidCallback onNextMonth;
+  final Function() onNextMonth;
 
   /// Callback when calendar returns to previous month
-  final VoidCallback onPreviousMonth;
+  final Function() onPreviousMonth;
 
   /// Visual variant of the calendar
   final HorizontalCalendarType calendarType;
