@@ -105,6 +105,18 @@ class EventCalendarStyle {
   /// Height of each hour slot (distance between hour timestamps)
   final double hourSlotHeight;
 
+  /// Divider color between the calendar header and the events grid.
+  final Color headerDividerColor;
+
+  /// Divider thickness between the calendar header and the events grid.
+  final double headerDividerThickness;
+
+  /// Divider indent between the calendar header and the events grid.
+  final double headerDividerIndent;
+
+  /// Divider end indent between the calendar header and the events grid.
+  final double headerDividerEndIndent;
+
   /// Creates a style configuration for the event calendar.
   const EventCalendarStyle({
     this.timeSlotHeight = 60.0,
@@ -132,6 +144,10 @@ class EventCalendarStyle {
     this.dividerIndent = 0.0,
     this.dividerEndIndent = 0.0,
     this.dividerStyle = BorderStyle.solid,
+    this.headerDividerColor = Colors.grey,
+    this.headerDividerThickness = 1.0,
+    this.headerDividerIndent = 0.0,
+    this.headerDividerEndIndent = 0.0,
   });
 }
 
@@ -264,10 +280,10 @@ class _EventCalendarState extends State<EventCalendar> {
           onPreviousMonth: widget.onPreviousMonth,
         ),
         Divider(
-          color: widget.style.dividerColor,
-          thickness: widget.style.dividerThickness,
-          indent: widget.style.dividerIndent,
-          endIndent: widget.style.dividerEndIndent,
+          color: widget.style.headerDividerColor,
+          thickness: widget.style.headerDividerThickness,
+          indent: widget.style.headerDividerIndent,
+          endIndent: widget.style.headerDividerEndIndent,
         ),
         Expanded(
           child: Row(
@@ -309,28 +325,46 @@ class _EventCalendarState extends State<EventCalendar> {
     return ListView.builder(
       controller: controller,
       physics: const ClampingScrollPhysics(),
-      itemCount: totalSlots,
+      itemCount: totalSlots + 1, // Add one for the last half-hour slot
       itemBuilder: (context, index) {
-        final hour = widget.startHour + index;
-        return SizedBox(
-          height: widget.style.hourSlotHeight,
-          child: Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 8, top: 0),
-              child: Text(
-                DateFormat('HH:00').format(DateTime(0, 0, 0, hour)),
-                style: widget.style.timeTextStyle,
+        if (index < totalSlots) {
+          final hour = widget.startHour + index;
+          return SizedBox(
+            height: widget.style.hourSlotHeight,
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8, top: 0),
+                child: Text(
+                  DateFormat('HH:00').format(DateTime(0, 0, 0, hour)),
+                  style: widget.style.timeTextStyle,
+                ),
               ),
             ),
-          ),
-        );
+          );
+        } else {
+          // Last half-hour slot with extra space for easier reach
+          return SizedBox(
+            height: widget.style.hourSlotHeight / 2 + 24, // 24px extra space
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8, top: 0),
+                child: Text(
+                  DateFormat('HH:30')
+                      .format(DateTime(0, 0, 0, widget.endHour - 1)),
+                  style: widget.style.timeTextStyle,
+                ),
+              ),
+            ),
+          );
+        }
       },
     );
   }
 
   Widget _buildGridLines(double dayWidth, double timelineHeight) {
-    final totalSlots = (widget.endHour - widget.startHour) + 1;
+    final totalSlots = (widget.endHour - widget.startHour);
     return Column(
       children: [
         for (int i = 0; i < totalSlots; i++)
@@ -363,8 +397,8 @@ class _EventCalendarState extends State<EventCalendar> {
                               style: widget.style.dividerStyle,
                             ),
                             right: BorderSide(
-                              color:
-                                  widget.style.gridColor.withValues(alpha: 0.2),
+                              color: widget.style.gridColor
+                                  .withValues(alpha: (0.2 * 255)),
                               width: widget.style.gridWidth,
                             ),
                           ),
@@ -375,6 +409,47 @@ class _EventCalendarState extends State<EventCalendar> {
               ),
             ],
           ),
+        // Add the last half-hour slot with extra space, but no double divider
+        Stack(
+          children: [
+            SizedBox(
+              height: widget.style.hourSlotHeight / 2 + 24, // 24px extra space
+              child: Row(
+                children: [
+                  for (int j = 0; j < 7; j++) Container(width: dayWidth),
+                ],
+              ),
+            ),
+            // Only one divider at the top of the last half-hour slot
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Row(
+                children: [
+                  for (int j = 0; j < 7; j++)
+                    Container(
+                      width: dayWidth,
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: widget.style.dividerColor,
+                            width: widget.style.dividerThickness,
+                            style: widget.style.dividerStyle,
+                          ),
+                          right: BorderSide(
+                            color: widget.style.gridColor
+                                .withValues(alpha: (0.2 * 255)),
+                            width: widget.style.gridWidth,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
