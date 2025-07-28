@@ -3,9 +3,9 @@
 
 ---
 
-# 🚀 horizontal_weekly_calendar v1.1.3 — All-New Features!
+# 🚀 horizontal_weekly_calendar v1.1.5 — All-New Features!
 
-**v1.1.3 is here!** This update brings two powerful new calendar types:
+**v1.1.5 is here!** This update brings two powerful new calendar types:
 
 - **TableWeeklyCalendar**: A full table-style monthly calendar with week rows, focus dates, and custom header support.
 - **EventCalendar**: A professional event calendar view with time slots, event blocks, and full customization.
@@ -40,8 +40,8 @@ A **feature-rich**, *highly customizable* horizontal calendar widget for Flutter
 | **Outlined**        | <img src="https://github.com/user-attachments/assets/f02deb5f-7896-42f7-9a87-76e51e242ef0" width="200" height="450" alt="Outlined Style" /> |
 | **Minimal**         | <img src="https://github.com/user-attachments/assets/e7580224-08bf-4d72-914e-5497ba8db19d" width="200" height="450" alt="Minimal Style" />  |
 | **Elevated**        | <img src="https://github.com/user-attachments/assets/9a7e7a88-3253-4eb4-9459-7cfdc45a0762" width="200" height="450" alt="Elevated Style" /> |
-| **Table Calendar**  | <img src="https://github.com/user-attachments/assets/b2816295-b1d4-467c-8897-456edc62db9f">                                                                                                       |
-| **Event Calendar**  | <img src="https://github.com/user-attachments/assets/6d3616e2-b577-4432-a43c-e0c1eda41a63">                                                                                                                                     |
+| **Table Calendar**  | <img src="https://github.com/user-attachments/assets/b2816295-b1d4-467c-8897-456edc62db9f" width="200" height="450" alt="Table Style" >     |
+| **Event Calendar**  | <img src="https://github.com/user-attachments/assets/6d3616e2-b577-4432-a43c-e0c1eda41a63" width="200" height="450" alt="Event Style" >     |
 
 - **Flexible Date Selection**
 - **Month Navigation Controls**
@@ -49,7 +49,7 @@ A **feature-rich**, *highly customizable* horizontal calendar widget for Flutter
 - **Table & Event Views** (NEW!)
 - **Focus Dates, Custom Headers, and More!**
 
-## 🆕 What's New in 1.1.3
+## 🆕 What's New in 1.1.5
 
 - **TableWeeklyCalendar**: Display a full month in a table layout, highlight focus dates, and add custom headers.
 - **EventCalendar**: Show events in a time-grid, with custom event widgets and time slots.
@@ -62,7 +62,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  horizontal_weekly_calendar: ^1.1.3
+  horizontal_weekly_calendar: ^1.1.5
 ```
 
 ## 💡 Quick Start

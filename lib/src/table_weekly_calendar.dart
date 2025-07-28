@@ -177,13 +177,15 @@ class _TableWeeklyCalendarState extends State<TableWeeklyCalendar> {
         () {
           if (_currentMonthPage > 0) {
             _pageController.previousPage(
-                duration: Duration(milliseconds: 300), curve: Curves.ease);
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.ease);
           }
         },
         () {
           if (_currentMonthPage < 11) {
             _pageController.nextPage(
-                duration: Duration(milliseconds: 300), curve: Curves.ease);
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.ease);
           }
         },
       );
@@ -202,7 +204,8 @@ class _TableWeeklyCalendarState extends State<TableWeeklyCalendar> {
             onPressed: () {
               if (_currentMonthPage > 0) {
                 _pageController.previousPage(
-                    duration: Duration(milliseconds: 300), curve: Curves.ease);
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.ease);
               }
             },
           ),
@@ -219,7 +222,8 @@ class _TableWeeklyCalendarState extends State<TableWeeklyCalendar> {
             onPressed: () {
               if (_currentMonthPage < 11) {
                 _pageController.nextPage(
-                    duration: Duration(milliseconds: 300), curve: Curves.ease);
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.ease);
               }
             },
           ),
@@ -253,12 +257,13 @@ class _TableWeeklyCalendarState extends State<TableWeeklyCalendar> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         if (widget.showMonthHeader) _buildHeader(),
         Padding(
           padding: widget.tablePadding,
           child: SizedBox(
-            height: widget.calendarStyle.dayIndicatorSize * 7 + 40,
+            height: widget.calendarStyle.dayIndicatorSize * 6,
             child: PageView.builder(
               controller: _pageController,
               onPageChanged: _onPageChanged,
@@ -266,63 +271,68 @@ class _TableWeeklyCalendarState extends State<TableWeeklyCalendar> {
               itemBuilder: (context, index) {
                 final monthDate = DateTime(_currentDate.year, index + 1);
                 final weeks = _generateWeeks(monthDate);
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Table(
-                    children: [
-                      TableRow(
-                        children: List.generate(7, (i) {
-                          final weekday =
-                              widget.startingDay?.value ?? DateTime.monday;
-                          final dayIndex = (weekday - 1 + i) % 7;
-                          final dayName = DateFormat('E')
-                              .format(DateTime(2023, 1, 2 + dayIndex))
-                              .substring(0, 2);
-                          return Center(
+                return Table(
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  children: [
+                    TableRow(
+                      decoration: const BoxDecoration(),
+                      children: List.generate(7, (i) {
+                        final weekday =
+                            widget.startingDay?.value ?? DateTime.monday;
+                        final dayIndex = (weekday - 1 + i) % 7;
+                        final dayName = DateFormat('E')
+                            .format(DateTime(2023, 1, 2 + dayIndex))
+                            .substring(0, 2);
+                        return SizedBox(
+                          height: widget.calendarStyle.dayIndicatorSize,
+                          child: Center(
                             child: Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
+                              padding: const EdgeInsets.only(bottom: 4),
                               child: Text(
                                 dayName,
                                 style: widget.calendarStyle.dayNameStyle,
                               ),
                             ),
-                          );
-                        }),
-                      ),
-                      ...weeks.map((week) {
-                        return TableRow(
-                          children: week.map((day) {
-                            final isSelected =
-                                _isSameDay(day, widget.selectedDate);
-                            final isCurrentMonth = day.month == monthDate.month;
-                            final isFocus = _isFocusDate(day);
-                            final focusDate =
-                                isFocus ? _getFocusDate(day) : null;
-                            final backgroundColor = isFocus
-                                ? (isSelected
-                                    ? widget.calendarStyle.activeDayColor
-                                    : focusDate!.backgroundColor)
-                                : (isSelected
-                                    ? widget.calendarStyle.activeDayColor
-                                    : isCurrentMonth
-                                        ? widget.calendarStyle.dayIndicatorColor
-                                        : Colors.transparent);
-                            final textColor = isFocus
-                                ? (isSelected
-                                    ? widget.calendarStyle.selectedDayTextStyle
-                                        .color
-                                    : focusDate!.foregroundColor)
-                                : (isSelected
-                                    ? widget.calendarStyle.selectedDayTextStyle
-                                        .color
-                                    : isCurrentMonth
-                                        ? widget
-                                            .calendarStyle.dayNumberStyle.color
-                                        : widget.calendarStyle
-                                            .inactiveDayTextStyle.color);
-                            return GestureDetector(
+                          ),
+                        );
+                      }),
+                    ),
+                    ...weeks.map((week) {
+                      return TableRow(
+                        children: week.map((day) {
+                          final isSelected =
+                              _isSameDay(day, widget.selectedDate);
+                          final isCurrentMonth = day.month == monthDate.month;
+                          final isFocus = _isFocusDate(day);
+                          final focusDate = isFocus ? _getFocusDate(day) : null;
+                          final backgroundColor = isFocus
+                              ? (isSelected
+                                  ? widget.calendarStyle.activeDayColor
+                                  : focusDate!.backgroundColor)
+                              : (isSelected
+                                  ? widget.calendarStyle.activeDayColor
+                                  : isCurrentMonth
+                                      ? widget.calendarStyle.dayIndicatorColor
+                                      : Colors.transparent);
+                          final textColor = isFocus
+                              ? (isSelected
+                                  ? widget
+                                      .calendarStyle.selectedDayTextStyle.color
+                                  : focusDate!.foregroundColor)
+                              : (isSelected
+                                  ? widget
+                                      .calendarStyle.selectedDayTextStyle.color
+                                  : isCurrentMonth
+                                      ? widget
+                                          .calendarStyle.dayNumberStyle.color
+                                      : widget.calendarStyle
+                                          .inactiveDayTextStyle.color);
+                          return SizedBox(
+                            height: widget.calendarStyle.dayIndicatorSize,
+                            child: GestureDetector(
                               onTap: () => _handleDaySelection(day),
                               child: Container(
+                                margin: EdgeInsets.zero,
                                 width: widget.calendarStyle.dayIndicatorSize,
                                 height: widget.calendarStyle.dayIndicatorSize,
                                 decoration: BoxDecoration(
@@ -338,12 +348,12 @@ class _TableWeeklyCalendarState extends State<TableWeeklyCalendar> {
                                       .copyWith(color: textColor),
                                 ),
                               ),
-                            );
-                          }).toList(),
-                        );
-                      }),
-                    ],
-                  ),
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    }),
+                  ],
                 );
               },
             ),
