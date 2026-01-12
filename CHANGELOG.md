@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.2.8] - 2026-01-12
+#### Features
+- **Overlapping Event Support**: Events that overlap in time are now displayed side by side instead of stacking.
+- **Smart Event Layout**: Multiple overlapping events automatically split the available horizontal space equally.
+- **Customizable Event Margin**: Added `overlappingEventMargin` property to `EventCalendarStyle` for controlling spacing between side-by-side events.
+
+## [1.2.6] - 2025-12-30
+#### Features
+- **Added `minDate` and `maxDate` parameters** to all calendar widgets (HorizontalWeeklyCalendar, TableWeeklyCalendar, EventCalendar).
+- **Added `disabledDayTextStyle` and `disabledDayColor`** to HorizontalCalendarStyle for customizing disabled date appearance.
+- **Disabled dates** before minDate or after maxDate are now non-clickable and visually distinct.
+- **Navigation buttons are now disabled** when reaching the boundary months defined by minDate/maxDate.
+
+## [1.2.4] - 2025-10-15
+#### Bug Fixes
+
+## [1.2.3] - 2025-10-15
+#### Bug Fixes
+
+## [1.2.2] - 2025-10-15
+#### Bug Fixes
+
+## [1.2.1] - 2025-10-14
+#### Bug Fixes
+
+## [1.2.0] - 2025-10-14
+#### Bug Fixes
+- **Fixed a bug** where the table calendar would show odd days (like repeated days or missed ones).
+- **Added feature** You can now add custom horizontal and vertical spacing in the table calendar between days.
+
+
 ## [1.1.5] - 2025-07-28
 #### Bug Fixes
 - **Fixed a bug** where the table calendar would add an extra space under it.

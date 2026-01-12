@@ -90,6 +90,12 @@ class HorizontalCalendarStyle {
   /// Curve for selection animations
   final Curve selectionAnimationCurve;
 
+  /// Style for disabled day numbers
+  final TextStyle disabledDayTextStyle;
+
+  /// Background color for disabled day indicators
+  final Color disabledDayColor;
+
   /// Creates a style configuration for the calendar
   const HorizontalCalendarStyle({
     this.monthHeaderStyle =
@@ -104,6 +110,9 @@ class HorizontalCalendarStyle {
     this.selectedDayTextStyle =
         const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
     this.inactiveDayTextStyle = const TextStyle(fontSize: 16),
+    this.disabledDayTextStyle =
+        const TextStyle(fontSize: 16, color: Colors.grey),
+    this.disabledDayColor = Colors.transparent,
     this.showParticles = false,
     this.selectionAnimationDuration = const Duration(milliseconds: 300),
     this.selectionAnimationCurve = Curves.easeOutBack,
@@ -157,6 +166,12 @@ class HorizontalWeeklyCalendar extends StatefulWidget {
   /// Global toggle for all animations
   final bool enableAnimations;
 
+  /// Minimum selectable date
+  final DateTime? minDate;
+
+  /// Maximum selectable date
+  final DateTime? maxDate;
+
   /// Default constructor for standard calendar
   const HorizontalWeeklyCalendar({
     super.key,
@@ -175,6 +190,8 @@ class HorizontalWeeklyCalendar extends StatefulWidget {
     this.iconColor,
     this.startingDay,
     this.enableAnimations = true,
+    this.minDate,
+    this.maxDate,
   });
 
   /// Preconfigured constructor for outlined variant
@@ -194,6 +211,8 @@ class HorizontalWeeklyCalendar extends StatefulWidget {
     this.iconColor,
     this.startingDay,
     this.enableAnimations = true,
+    this.minDate,
+    this.maxDate,
   }) : calendarType = HorizontalCalendarType.outlined;
 
   /// Preconfigured constructor for minimal variant
@@ -217,6 +236,8 @@ class HorizontalWeeklyCalendar extends StatefulWidget {
     this.iconColor,
     this.startingDay,
     this.enableAnimations = true,
+    this.minDate,
+    this.maxDate,
   }) : calendarType = HorizontalCalendarType.minimal;
 
   @override
@@ -287,6 +308,37 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
   bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
 
+  bool _isDateDisabled(DateTime date) {
+    final normalizedDate = DateTime(date.year, date.month, date.day);
+    if (widget.minDate != null) {
+      final normalizedMin = DateTime(
+          widget.minDate!.year, widget.minDate!.month, widget.minDate!.day);
+      if (normalizedDate.isBefore(normalizedMin)) return true;
+    }
+    if (widget.maxDate != null) {
+      final normalizedMax = DateTime(
+          widget.maxDate!.year, widget.maxDate!.month, widget.maxDate!.day);
+      if (normalizedDate.isAfter(normalizedMax)) return true;
+    }
+    return false;
+  }
+
+  bool _canNavigateToPreviousMonth() {
+    if (widget.minDate == null) return true;
+    final previousMonth = DateTime(_currentDate.year, _currentDate.month - 1);
+    final lastDayOfPreviousMonth = DateTime(previousMonth.year, previousMonth.month + 1, 0);
+    final normalizedMin = DateTime(widget.minDate!.year, widget.minDate!.month, widget.minDate!.day);
+    return !lastDayOfPreviousMonth.isBefore(normalizedMin);
+  }
+
+  bool _canNavigateToNextMonth() {
+    if (widget.maxDate == null) return true;
+    final nextMonth = DateTime(_currentDate.year, _currentDate.month + 1);
+    final firstDayOfNextMonth = DateTime(nextMonth.year, nextMonth.month, 1);
+    final normalizedMax = DateTime(widget.maxDate!.year, widget.maxDate!.month, widget.maxDate!.day);
+    return !firstDayOfNextMonth.isAfter(normalizedMax);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -316,18 +368,24 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
   }
 
   /// Builds individual day indicator based on current style
-  Widget _buildDayIndicator(DateTime day, bool isSelected) {
+  Widget _buildDayIndicator(DateTime day, bool isSelected, bool isDisabled) {
     final isMinimal = widget.calendarType == HorizontalCalendarType.minimal;
-    final textStyle = isSelected
-        ? widget.calendarStyle.selectedDayTextStyle
-        : widget.calendarStyle.inactiveDayTextStyle;
+    final textStyle = isDisabled
+        ? widget.calendarStyle.disabledDayTextStyle
+        : isSelected
+            ? widget.calendarStyle.selectedDayTextStyle
+            : widget.calendarStyle.inactiveDayTextStyle;
 
     Widget content = Text(
       day.day.toString(),
       style: isMinimal
           ? textStyle.copyWith(
-              color: isSelected ? widget.calendarStyle.activeDayColor : null,
-              fontWeight: isSelected ? FontWeight.bold : null,
+              color: isDisabled
+                  ? widget.calendarStyle.disabledDayTextStyle.color
+                  : isSelected
+                      ? widget.calendarStyle.activeDayColor
+                      : null,
+              fontWeight: isSelected && !isDisabled ? FontWeight.bold : null,
             )
           : textStyle,
     );
@@ -336,7 +394,7 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
       return AnimatedContainer(
         duration: widget.calendarStyle.selectionAnimationDuration,
         decoration: BoxDecoration(
-          border: isSelected
+          border: isSelected && !isDisabled
               ? Border(
                   bottom: BorderSide(
                     color: widget.calendarStyle.activeDayColor,
@@ -357,14 +415,19 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
           width: widget.calendarStyle.dayIndicatorSize,
           height: widget.calendarStyle.dayIndicatorSize,
           decoration: BoxDecoration(
-            color: isSelected
-                ? widget.calendarStyle.activeDayColor
-                : Colors.transparent,
+            color: isDisabled
+                ? widget.calendarStyle.disabledDayColor
+                : isSelected
+                    ? widget.calendarStyle.activeDayColor
+                    : Colors.transparent,
             border: widget.calendarStyle.dayIndicatorBorder ??
                 Border.all(
-                  color: isSelected
-                      ? widget.calendarStyle.activeDayColor
-                      : Colors.grey,
+                  color: isDisabled
+                      ? widget.calendarStyle.disabledDayTextStyle.color ??
+                          Colors.grey
+                      : isSelected
+                          ? widget.calendarStyle.activeDayColor
+                          : Colors.grey,
                   width: 1.5,
                 ),
             borderRadius:
@@ -378,7 +441,7 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
 
       case HorizontalCalendarType.elevated:
         return Material(
-          elevation: isSelected ? 8 : 1,
+          elevation: isDisabled ? 0 : (isSelected ? 8 : 1),
           borderRadius:
               BorderRadius.circular(widget.calendarStyle.dayIndicatorSize),
           child: AnimatedContainer(
@@ -387,9 +450,11 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
             width: widget.calendarStyle.dayIndicatorSize,
             height: widget.calendarStyle.dayIndicatorSize,
             decoration: BoxDecoration(
-              color: isSelected
-                  ? widget.calendarStyle.activeDayColor
-                  : Colors.white,
+              color: isDisabled
+                  ? widget.calendarStyle.disabledDayColor
+                  : isSelected
+                      ? widget.calendarStyle.activeDayColor
+                      : Colors.white,
               borderRadius:
                   BorderRadius.circular(widget.calendarStyle.dayIndicatorSize),
             ),
@@ -404,9 +469,11 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
           width: widget.calendarStyle.dayIndicatorSize,
           height: widget.calendarStyle.dayIndicatorSize,
           decoration: BoxDecoration(
-            color: isSelected
-                ? widget.calendarStyle.activeDayColor
-                : widget.calendarStyle.dayIndicatorColor,
+            color: isDisabled
+                ? widget.calendarStyle.disabledDayColor
+                : isSelected
+                    ? widget.calendarStyle.activeDayColor
+                    : widget.calendarStyle.dayIndicatorColor,
             shape: BoxShape.circle,
           ),
           child: Center(child: content),
@@ -416,6 +483,7 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
 
   /// Handles date selection logic and month transitions
   void _handleDaySelection(DateTime day) {
+    if (_isDateDisabled(day)) return;
     widget.onDateSelected(day);
     final selectedMonth = DateTime(day.year, day.month);
     if (selectedMonth != DateTime(_currentDate.year, _currentDate.month)) {
@@ -459,10 +527,13 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
           IconButton(
             icon: Icon(
               widget.previousMonthIcon,
-              color: widget.iconColor,
+              color: _canNavigateToPreviousMonth()
+                  ? widget.iconColor
+                  : (widget.iconColor ?? Theme.of(context).iconTheme.color)?.withOpacity(0.3),
               size: isMinimal ? 20 : 24,
             ),
-            onPressed: () {
+            onPressed: _canNavigateToPreviousMonth()
+                ? () {
               setState(() {
                 _currentDate =
                     DateTime(_currentDate.year, _currentDate.month - 1);
@@ -480,7 +551,8 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
                 }
               });
               widget.onPreviousMonth();
-            },
+            }
+                : null,
           ),
           Text(
             DateFormat(isMinimal ? 'MMM y' : 'MMMM y').format(_currentDate),
@@ -489,10 +561,13 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
           IconButton(
             icon: Icon(
               widget.nextMonthIcon,
-              color: widget.iconColor,
+              color: _canNavigateToNextMonth()
+                  ? widget.iconColor
+                  : (widget.iconColor ?? Theme.of(context).iconTheme.color)?.withOpacity(0.3),
               size: isMinimal ? 20 : 24,
             ),
-            onPressed: () {
+            onPressed: _canNavigateToNextMonth()
+                ? () {
               setState(() {
                 _currentDate =
                     DateTime(_currentDate.year, _currentDate.month + 1);
@@ -510,7 +585,8 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
                 }
               });
               widget.onNextMonth();
-            },
+            }
+                : null,
           ),
         ],
       ),
@@ -540,10 +616,13 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: _weeks[index].map((day) {
                         final isSelected = _isSameDay(day, widget.selectedDate);
+                        final isDisabled = _isDateDisabled(day);
                         return SizedBox(
                           width: dayWidth,
                           child: GestureDetector(
-                            onTap: () => _handleDaySelection(day),
+                            onTap: isDisabled
+                                ? null
+                                : () => _handleDaySelection(day),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -556,7 +635,7 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 const SizedBox(height: 4),
-                                _buildDayIndicator(day, isSelected),
+                                _buildDayIndicator(day, isSelected, isDisabled),
                               ],
                             ),
                           ),

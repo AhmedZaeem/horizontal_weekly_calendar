@@ -120,6 +120,9 @@ class EventCalendarStyle {
   /// Style for the horizontal calendar, allowing customization of appearance.
   final HorizontalCalendarStyle calendarStyle;
 
+  /// Margin between overlapping events displayed side by side.
+  final double overlappingEventMargin;
+
   /// Creates a style configuration for the event calendar.
   const EventCalendarStyle({
     this.timeSlotHeight = 60.0,
@@ -152,6 +155,7 @@ class EventCalendarStyle {
     this.headerDividerIndent = 0.0,
     this.headerDividerEndIndent = 0.0,
     this.calendarStyle = const HorizontalCalendarStyle(),
+    this.overlappingEventMargin = 2.0,
   });
 }
 
@@ -190,6 +194,12 @@ class EventCalendar extends StatefulWidget {
   /// Builder for time slots, allowing customization of how each time slot is displayed.
   final Widget Function(BuildContext, DateTime)? timeSlotBuilder;
 
+  /// Minimum selectable date
+  final DateTime? minDate;
+
+  /// Maximum selectable date
+  final DateTime? maxDate;
+
   /// Creates a calendar widget that displays events for each day of the week.
   const EventCalendar({
     super.key,
@@ -204,6 +214,8 @@ class EventCalendar extends StatefulWidget {
     this.endHour = 19,
     this.eventBuilder,
     this.timeSlotBuilder,
+    this.minDate,
+    this.maxDate,
   });
 
   @override
@@ -283,6 +295,8 @@ class _EventCalendarState extends State<EventCalendar> {
           calendarStyle: widget.style.calendarStyle,
           onNextMonth: widget.onNextMonth,
           onPreviousMonth: widget.onPreviousMonth,
+          minDate: widget.minDate,
+          maxDate: widget.maxDate,
         ),
         Divider(
           color: widget.style.headerDividerColor,
@@ -418,6 +432,52 @@ class _EventCalendarState extends State<EventCalendar> {
     );
   }
 
+  bool _eventsOverlap(CalendarEvent a, CalendarEvent b) {
+    return a.startTime.isBefore(b.endTime) && b.startTime.isBefore(a.endTime);
+  }
+
+  List<List<CalendarEvent>> _groupOverlappingEvents(List<CalendarEvent> events) {
+    if (events.isEmpty) return [];
+
+    final sortedEvents = List<CalendarEvent>.from(events)
+      ..sort((a, b) => a.startTime.compareTo(b.startTime));
+
+    final List<List<CalendarEvent>> groups = [];
+
+    for (final event in sortedEvents) {
+      bool addedToGroup = false;
+
+      for (final group in groups) {
+        if (group.any((e) => _eventsOverlap(e, event))) {
+          group.add(event);
+          addedToGroup = true;
+          break;
+        }
+      }
+
+      if (!addedToGroup) {
+        groups.add([event]);
+      }
+    }
+
+    final List<List<CalendarEvent>> mergedGroups = [];
+    for (final group in groups) {
+      bool merged = false;
+      for (final mergedGroup in mergedGroups) {
+        if (group.any((e1) => mergedGroup.any((e2) => _eventsOverlap(e1, e2)))) {
+          mergedGroup.addAll(group);
+          merged = true;
+          break;
+        }
+      }
+      if (!merged) {
+        mergedGroups.add(List.from(group));
+      }
+    }
+
+    return mergedGroups;
+  }
+
   List<Widget> _buildEvents(
     Map<DateTime, List<CalendarEvent>> groupedEvents,
     double dayWidth,
@@ -425,21 +485,33 @@ class _EventCalendarState extends State<EventCalendar> {
   ) {
     final events = <Widget>[];
     final dayEvents = _eventsForDay(widget.selectedDate, groupedEvents);
-    for (final event in dayEvents) {
-      final rect =
-          _calculateEventRect(event, dayWidth, widget.style.timeSlotHeight);
-      events.add(
-        Positioned(
-          left: 0,
-          top: rect.top,
-          width: dayWidth * 7,
-          height: rect.height,
-          child: SizedBox.expand(
-            child: widget.eventBuilder?.call(context, event) ??
-                _buildDefaultEvent(event),
+    final totalWidth = dayWidth * 7;
+    final margin = widget.style.overlappingEventMargin;
+
+    final overlappingGroups = _groupOverlappingEvents(dayEvents);
+
+    for (final group in overlappingGroups) {
+      final groupSize = group.length;
+      final eventWidth = (totalWidth - (margin * (groupSize - 1))) / groupSize;
+
+      for (int i = 0; i < group.length; i++) {
+        final event = group[i];
+        final rect = _calculateEventRect(event, dayWidth, widget.style.timeSlotHeight);
+        final left = i * (eventWidth + margin);
+
+        events.add(
+          Positioned(
+            left: left,
+            top: rect.top,
+            width: eventWidth,
+            height: rect.height,
+            child: SizedBox.expand(
+              child: widget.eventBuilder?.call(context, event) ??
+                  _buildDefaultEvent(event),
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
     return events;
   }

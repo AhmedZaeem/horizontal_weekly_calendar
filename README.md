@@ -3,10 +3,13 @@
 
 ---
 
-# 🚀 horizontal_weekly_calendar v1.1.5 — All-New Features!
+# 🚀 horizontal_weekly_calendar v1.2.8 — All-New Features!
 
-**v1.1.5 is here!** This update brings two powerful new calendar types:
+**v1.2.8 is here!** This update brings overlapping event support to the EventCalendar:
 
+- **Overlapping Event Support**: Events that overlap in time are displayed side by side.
+- **Smart Event Layout**: Multiple overlapping events automatically split horizontal space.
+- **Customizable Event Margin**: Control spacing between side-by-side events with `overlappingEventMargin`.
 - **TableWeeklyCalendar**: A full table-style monthly calendar with week rows, focus dates, and custom header support.
 - **EventCalendar**: A professional event calendar view with time slots, event blocks, and full customization.
 
@@ -48,13 +51,20 @@ A **feature-rich**, *highly customizable* horizontal calendar widget for Flutter
 - **Fully Customizable Theming**
 - **Table & Event Views** (NEW!)
 - **Focus Dates, Custom Headers, and More!**
+- **Overlapping Event Support** (NEW!)
 
-## 🆕 What's New in 1.1.5
+## 🆕 What's New in 1.2.8
 
-- **TableWeeklyCalendar**: Display a full month in a table layout, highlight focus dates, and add custom headers.
-- **EventCalendar**: Show events in a time-grid, with custom event widgets and time slots.
-- **Improved Example App**: See all calendar types side-by-side for easy comparison.
-- **Bug Fixes & Performance Improvements**
+- **Overlapping Event Support**: Events that overlap in time are now displayed side by side instead of stacking on top of each other.
+- **Smart Event Layout**: When multiple events overlap, they automatically split the available horizontal space equally.
+- **Customizable Event Margin**: Added `overlappingEventMargin` property to `EventCalendarStyle` for controlling the spacing between side-by-side events (default: 2.0).
+
+## 🆕 What's New in 1.2.7
+
+- **Date Range Restrictions**: Set `minDate` and `maxDate` on all calendar widgets to restrict selectable dates.
+- **Disabled Date Styling**: Customize disabled dates with `disabledDayTextStyle` and `disabledDayColor` in HorizontalCalendarStyle.
+- **Non-Clickable Disabled Dates**: Dates outside the allowed range are visually distinct and cannot be selected.
+- **Navigation Boundary Enforcement**: Previous/next month buttons are automatically disabled when reaching minDate/maxDate boundaries.
 
 ## 🔧 Installation
 
@@ -62,7 +72,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  horizontal_weekly_calendar: ^1.1.5
+  horizontal_weekly_calendar: ^1.2.8
 ```
 
 ## 💡 Quick Start
@@ -114,6 +124,8 @@ Theme(
 | `selectedDate` | Currently selected date | `DateTime` | ✅ |
 | `onDateSelected` | Date selection callback | `Function(DateTime)` | ✅ |
 | `calendarType` | Display style type | `HorizontalCalendarType` | ❌ |
+| `minDate` | Minimum selectable date | `DateTime?` | ❌ |
+| `maxDate` | Maximum selectable date | `DateTime?` | ❌ |
 
 ## 🤝 Contributing
 
