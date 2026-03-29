@@ -3,17 +3,19 @@
 
 ---
 
-# 🚀 horizontal_weekly_calendar v1.2.8 — All-New Features!
+# 🚀 horizontal_weekly_calendar v1.3.0 — DST Fix & Code Quality
 
-**v1.2.8 is here!** This update brings overlapping event support to the EventCalendar:
+**v1.3.0 is here!** This update fixes a critical calendar generation bug and improves code quality:
 
+- **DST Calendar Fix**: Fixed a bug where months crossing daylight saving time boundaries could show missing days, duplicate days, or incomplete weeks. All date math now uses DST-safe `DateTime` constructor arithmetic.
+- **Shared Utilities**: Extracted common calendar logic into `calendar_utils.dart` for a single source of truth.
+- **552+ Tests**: Comprehensive test suite covering every month from 2024–2028 with all 7 starting days, plus widget tests for all calendar types.
 - **Overlapping Event Support**: Events that overlap in time are displayed side by side.
-- **Smart Event Layout**: Multiple overlapping events automatically split horizontal space.
-- **Customizable Event Margin**: Control spacing between side-by-side events with `overlappingEventMargin`.
 - **TableWeeklyCalendar**: A full table-style monthly calendar with week rows, focus dates, and custom header support.
 - **EventCalendar**: A professional event calendar view with time slots, event blocks, and full customization.
+- **Date Range Restrictions**: Set `minDate` and `maxDate` on all calendar widgets with automatic navigation disabling.
 
-All previous styles (Standard, Outlined, Minimal, Elevated) are still available and improved! Now you can showcase and compare all calendar types in your app.
+All previous styles (Standard, Outlined, Minimal, Elevated) are still available and improved!
 
 ---
 
@@ -34,8 +36,8 @@ A **feature-rich**, *highly customizable* horizontal calendar widget for Flutter
   - Outlined
   - Minimal
   - Elevated
-  - **TableWeeklyCalendar** (NEW)
-  - **EventCalendar** (NEW)
+  - **TableWeeklyCalendar**
+  - **EventCalendar**
 
 | Style                | Preview                                                                                                                                     |
 |---------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
@@ -49,9 +51,18 @@ A **feature-rich**, *highly customizable* horizontal calendar widget for Flutter
 - **Flexible Date Selection**
 - **Month Navigation Controls**
 - **Fully Customizable Theming**
-- **Table & Event Views** (NEW!)
+- **Table & Event Views**
 - **Focus Dates, Custom Headers, and More!**
-- **Overlapping Event Support** (NEW!)
+- **Overlapping Event Support**
+- **Min/Max Date Restrictions**
+
+## 🆕 What's New in 1.3.0
+
+- **Fixed DST-related calendar generation bug**: Months crossing daylight saving time boundaries (March, April, October, November) could show missing or duplicate days. All date calculations now use DST-safe arithmetic.
+- **Fixed table calendar missing days**: Certain month/starting-day combinations (e.g., March 2026 with Saturday start) would only show 27 days instead of 31.
+- **Fixed horizontal weekly calendar day drift**: Custom starting days could cause off-by-one errors near DST transitions.
+- **Shared calendar utilities**: Common logic extracted into `calendar_utils.dart` — `generateWeeks`, `isSameDay`, `isDateDisabled`, `canNavigateToPreviousMonth`, `canNavigateToNextMonth`, `buildNavigationIcon`.
+- **552+ tests**: Full coverage of calendar generation across 5 years × 12 months × 7 starting days, plus widget tests for all calendar types.
 
 ## 🆕 What's New in 1.2.8
 
@@ -72,7 +83,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  horizontal_weekly_calendar: ^1.2.8
+  horizontal_weekly_calendar: ^1.3.0
 ```
 
 ## 💡 Quick Start
@@ -96,6 +107,38 @@ HorizontalCalendarStyle(
   monthHeaderStyle: TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.bold,
+  ),
+)
+```
+
+### Date Range Restrictions
+
+```dart
+HorizontalWeeklyCalendar(
+  initialDate: DateTime.now(),
+  selectedDate: _selectedDate,
+  onDateSelected: (date) => setState(() => _selectedDate = date),
+  minDate: DateTime(2026, 1, 1),
+  maxDate: DateTime(2026, 12, 31),
+  calendarStyle: HorizontalCalendarStyle(
+    disabledDayTextStyle: TextStyle(fontSize: 16, color: Colors.grey.shade300),
+    disabledDayColor: Colors.grey.shade100,
+  ),
+)
+```
+
+### Overlapping Events
+
+```dart
+EventCalendar(
+  currentMonth: DateTime.now(),
+  selectedDate: _selectedDate,
+  events: myEvents,
+  onDateSelected: (date) => setState(() => _selectedDate = date),
+  onNextMonth: () {},
+  onPreviousMonth: () {},
+  style: EventCalendarStyle(
+    overlappingEventMargin: 4.0,
   ),
 )
 ```
@@ -124,8 +167,27 @@ Theme(
 | `selectedDate` | Currently selected date | `DateTime` | ✅ |
 | `onDateSelected` | Date selection callback | `Function(DateTime)` | ✅ |
 | `calendarType` | Display style type | `HorizontalCalendarType` | ❌ |
+| `calendarStyle` | Visual styling configuration | `HorizontalCalendarStyle` | ❌ |
 | `minDate` | Minimum selectable date | `DateTime?` | ❌ |
 | `maxDate` | Maximum selectable date | `DateTime?` | ❌ |
+| `startingDay` | First day of the week | `Weekday?` | ❌ |
+| `enableAnimations` | Toggle all animations | `bool` | ❌ |
+| `showMonthHeader` | Show/hide month header | `bool` | ❌ |
+| `previousMonthIcon` | Custom previous icon | `IconData?` | ❌ |
+| `nextMonthIcon` | Custom next icon | `IconData?` | ❌ |
+| `iconColor` | Navigation icon color | `Color?` | ❌ |
+
+## 📁 File Structure
+
+```
+lib/
+  weekly_calendar.dart          # Package exports
+  src/
+    calendar_utils.dart         # Shared utilities (generateWeeks, isSameDay, etc.)
+    calendar_with_event.dart    # EventCalendar widget
+    horizontal_weekly_calendar_widget.dart  # HorizontalWeeklyCalendar widget
+    table_weekly_calendar.dart  # TableWeeklyCalendar widget
+```
 
 ## 🤝 Contributing
 

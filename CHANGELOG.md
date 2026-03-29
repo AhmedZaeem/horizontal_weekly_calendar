@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.3.0] - 2026-03-29
+#### Bug Fixes
+- **Fixed DST-related calendar generation bug**: Months crossing daylight saving time boundaries (e.g., March, April, October, November) could show missing days, duplicate days, or incomplete weeks. The root cause was using `Duration`-based date arithmetic which is unreliable across DST transitions. All date calculations now use `DateTime` constructor arithmetic and UTC-based difference calculations.
+- **Fixed table calendar missing days**: The table calendar could show fewer days than expected for certain month/starting-day combinations (e.g., March 2026 with Saturday start showing only 27 days).
+- **Fixed horizontal weekly calendar day drift**: The horizontal weekly calendar with a custom starting day could produce off-by-one day errors near DST boundaries.
+
+#### Improvements
+- **Shared calendar utilities**: Extracted common logic (`generateWeeks`, `isSameDay`, `isDateDisabled`, `canNavigateToPreviousMonth`, `canNavigateToNextMonth`, `buildNavigationIcon`) into `calendar_utils.dart` for consistency and maintainability.
+- **Comprehensive test suite**: Added 552+ unit and widget tests covering all month/year/starting-day combinations from 2024–2028, DST-prone months, leap years, disabled date logic, navigation boundary enforcement, and all three calendar widgets.
+- **Code cleanup**: Removed duplicated helper methods across widgets in favor of shared utilities.
+
 ## [1.2.8] - 2026-01-12
 #### Features
 - **Overlapping Event Support**: Events that overlap in time are now displayed side by side instead of stacking.
