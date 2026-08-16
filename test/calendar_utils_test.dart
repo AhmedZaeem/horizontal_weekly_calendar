@@ -33,65 +33,53 @@ void main() {
     });
 
     test('returns true when before minDate', () {
-      expect(
-          isDateDisabled(
-              DateTime(2026, 3, 10), DateTime(2026, 3, 15), null),
+      expect(isDateDisabled(DateTime(2026, 3, 10), DateTime(2026, 3, 15), null),
           true);
     });
 
     test('returns false when equal to minDate', () {
-      expect(
-          isDateDisabled(
-              DateTime(2026, 3, 15), DateTime(2026, 3, 15), null),
+      expect(isDateDisabled(DateTime(2026, 3, 15), DateTime(2026, 3, 15), null),
           false);
     });
 
     test('returns false when after minDate', () {
-      expect(
-          isDateDisabled(
-              DateTime(2026, 3, 20), DateTime(2026, 3, 15), null),
+      expect(isDateDisabled(DateTime(2026, 3, 20), DateTime(2026, 3, 15), null),
           false);
     });
 
     test('returns true when after maxDate', () {
-      expect(
-          isDateDisabled(
-              DateTime(2026, 3, 20), null, DateTime(2026, 3, 15)),
+      expect(isDateDisabled(DateTime(2026, 3, 20), null, DateTime(2026, 3, 15)),
           true);
     });
 
     test('returns false when equal to maxDate', () {
-      expect(
-          isDateDisabled(
-              DateTime(2026, 3, 15), null, DateTime(2026, 3, 15)),
+      expect(isDateDisabled(DateTime(2026, 3, 15), null, DateTime(2026, 3, 15)),
           false);
     });
 
     test('returns false when before maxDate', () {
-      expect(
-          isDateDisabled(
-              DateTime(2026, 3, 10), null, DateTime(2026, 3, 15)),
+      expect(isDateDisabled(DateTime(2026, 3, 10), null, DateTime(2026, 3, 15)),
           false);
     });
 
     test('returns false when within range', () {
       expect(
-          isDateDisabled(
-              DateTime(2026, 3, 15), DateTime(2026, 3, 10), DateTime(2026, 3, 20)),
+          isDateDisabled(DateTime(2026, 3, 15), DateTime(2026, 3, 10),
+              DateTime(2026, 3, 20)),
           false);
     });
 
     test('returns true when outside range (before)', () {
       expect(
-          isDateDisabled(
-              DateTime(2026, 3, 5), DateTime(2026, 3, 10), DateTime(2026, 3, 20)),
+          isDateDisabled(DateTime(2026, 3, 5), DateTime(2026, 3, 10),
+              DateTime(2026, 3, 20)),
           true);
     });
 
     test('returns true when outside range (after)', () {
       expect(
-          isDateDisabled(
-              DateTime(2026, 3, 25), DateTime(2026, 3, 10), DateTime(2026, 3, 20)),
+          isDateDisabled(DateTime(2026, 3, 25), DateTime(2026, 3, 10),
+              DateTime(2026, 3, 20)),
           true);
     });
   });
@@ -130,24 +118,19 @@ void main() {
 
     test('returns true when next month has selectable days', () {
       expect(
-          canNavigateToNextMonth(
-              DateTime(2026, 3, 1), DateTime(2026, 4, 15)),
+          canNavigateToNextMonth(DateTime(2026, 3, 1), DateTime(2026, 4, 15)),
           true);
     });
 
     test('returns false when next month starts after maxDate', () {
       expect(
-          canNavigateToNextMonth(
-              DateTime(2026, 3, 1), DateTime(2026, 3, 31)),
+          canNavigateToNextMonth(DateTime(2026, 3, 1), DateTime(2026, 3, 31)),
           false);
     });
 
     test('returns true when maxDate is in next month', () {
-      expect(
-          canNavigateToNextMonth(
-              DateTime(2026, 3, 1), DateTime(2026, 4, 1)),
+      expect(canNavigateToNextMonth(DateTime(2026, 3, 1), DateTime(2026, 4, 1)),
           true);
     });
   });
 }
-

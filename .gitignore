@@ -31,3 +31,7 @@ build/
 
 # FVM Version Cache
 .fvm/
+
+# Local developer tooling caches
+.claude/
+.tokensave/

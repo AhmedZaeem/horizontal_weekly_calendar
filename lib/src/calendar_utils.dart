@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'domain/calendar_date_math.dart';
+
 /// Returns true if [a] and [b] represent the same calendar date.
+@Deprecated('Use CalendarDateMath.isSameDay instead.')
 bool isSameDay(DateTime a, DateTime b) =>
     a.year == b.year && a.month == b.month && a.day == b.day;
 
 /// Returns true if [date] falls outside the [minDate]–[maxDate] range.
+@Deprecated('Use CalendarDateMath.clamp or a selectableDayPredicate instead.')
 bool isDateDisabled(DateTime date, DateTime? minDate, DateTime? maxDate) {
   final normalized = DateTime(date.year, date.month, date.day);
   if (minDate != null) {
@@ -19,15 +23,18 @@ bool isDateDisabled(DateTime date, DateTime? minDate, DateTime? maxDate) {
 }
 
 /// Returns true if navigating to the previous month is allowed given [minDate].
+@Deprecated('Use HorizontalCalendarController.previous instead.')
 bool canNavigateToPreviousMonth(DateTime currentDate, DateTime? minDate) {
   if (minDate == null) return true;
   final previousMonth = DateTime(currentDate.year, currentDate.month - 1);
-  final lastDayOfPrev = DateTime(previousMonth.year, previousMonth.month + 1, 0);
+  final lastDayOfPrev =
+      DateTime(previousMonth.year, previousMonth.month + 1, 0);
   final min = DateTime(minDate.year, minDate.month, minDate.day);
   return !lastDayOfPrev.isBefore(min);
 }
 
 /// Returns true if navigating to the next month is allowed given [maxDate].
+@Deprecated('Use HorizontalCalendarController.next instead.')
 bool canNavigateToNextMonth(DateTime currentDate, DateTime? maxDate) {
   if (maxDate == null) return true;
   final firstDayOfNext = DateTime(currentDate.year, currentDate.month + 1, 1);
@@ -35,67 +42,41 @@ bool canNavigateToNextMonth(DateTime currentDate, DateTime? maxDate) {
   return !firstDayOfNext.isAfter(max);
 }
 
-int _daysBetweenInclusive(DateTime start, DateTime end) {
-  return DateTime.utc(end.year, end.month, end.day)
-          .difference(DateTime.utc(start.year, start.month, start.day))
-          .inDays +
-      1;
-}
-
 /// Generates a list of complete 7-day weeks covering the full [date] month,
-/// aligned to [startDay] (1=Monday … 7=Sunday). Uses DST-safe arithmetic.
+/// aligned to [startDay] (1=Monday … 7=Sunday).
+///
+/// Delegates to [CalendarDateMath.monthGrid], so the 1.x entrypoint produces
+/// exactly the same contiguous, gap-free, duplicate-free dates as the 2.0
+/// surfaces.
+@Deprecated('Use CalendarDateMath.monthGrid instead.')
 List<List<DateTime>> generateWeeks(DateTime date, int startDay) {
-  final firstDayOfMonth = DateTime(date.year, date.month, 1);
-  final lastDayOfMonth = DateTime(date.year, date.month + 1, 0);
-
-  final daysToSubtract = (firstDayOfMonth.weekday - startDay + 7) % 7;
-  final firstCalendarDay = DateTime(
-    firstDayOfMonth.year,
-    firstDayOfMonth.month,
-    firstDayOfMonth.day - daysToSubtract,
+  final grid = CalendarDateMath.monthGrid(date, startDay);
+  return List.generate(
+    grid.length ~/ 7,
+    (weekIndex) => grid.sublist(weekIndex * 7, weekIndex * 7 + 7),
   );
-
-  final daysToAdd = (startDay + 6 - lastDayOfMonth.weekday) % 7;
-  final lastCalendarDay = DateTime(
-    lastDayOfMonth.year,
-    lastDayOfMonth.month,
-    lastDayOfMonth.day + daysToAdd,
-  );
-
-  final totalDays = _daysBetweenInclusive(firstCalendarDay, lastCalendarDay);
-  final numberOfWeeks = totalDays ~/ 7;
-
-  return List.generate(numberOfWeeks, (weekIndex) {
-    return List.generate(7, (dayIndex) {
-      final offset = (weekIndex * 7) + dayIndex;
-      return DateTime(
-        firstCalendarDay.year,
-        firstCalendarDay.month,
-        firstCalendarDay.day + offset,
-      );
-    });
-  });
 }
 
 /// Generates sequential chunks of up to 7 days for the [date] month
 /// without weekday alignment. The last chunk may have fewer than 7 days.
+@Deprecated('Use CalendarDateMath.days instead.')
 List<List<DateTime>> generateWeeksChunked(DateTime date) {
-  final lastDayOfMonth = DateTime(date.year, date.month + 1, 0);
-  final totalDays = lastDayOfMonth.day;
+  final totalDays = CalendarDateMath.daysInMonth(date.year, date.month);
+  final firstOfMonth = DateTime(date.year, date.month, 1);
   final numberOfWeeks = (totalDays + 6) ~/ 7;
 
   return List.generate(numberOfWeeks, (weekIndex) {
-    final List<DateTime> week = [];
-    for (int dayOffset = 0; dayOffset < 7; dayOffset++) {
-      final dayNumber = (weekIndex * 7) + dayOffset + 1;
-      if (dayNumber > totalDays) break;
-      week.add(DateTime(date.year, date.month, dayNumber));
-    }
-    return week;
+    final offset = weekIndex * 7;
+    final length = offset + 7 <= totalDays ? 7 : totalDays - offset;
+    return CalendarDateMath.days(
+      CalendarDateMath.addDays(firstOfMonth, offset),
+      length,
+    );
   });
 }
 
 /// Builds a navigation icon button that appears disabled when [enabled] is false.
+@Deprecated('Use the v2 CalendarHeader or a custom header builder instead.')
 Widget buildNavigationIcon({
   required IconData icon,
   required bool enabled,

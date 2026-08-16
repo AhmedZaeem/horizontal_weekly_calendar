@@ -48,8 +48,7 @@ void main() {
               final weeks = generateWeeks(DateTime(year, month, 1), startDay);
               for (int w = 0; w < weeks.length; w++) {
                 expect(weeks[w].length, 7,
-                    reason:
-                        'Week $w of $year-$month should have 7 days');
+                    reason: 'Week $w of $year-$month should have 7 days');
               }
             }
           }
@@ -61,8 +60,7 @@ void main() {
               final weeks = generateWeeks(DateTime(year, month, 1), startDay);
               for (int w = 0; w < weeks.length; w++) {
                 expect(weeks[w].first.weekday, startDay,
-                    reason:
-                        'Week $w of $year-$month should start on $dayName');
+                    reason: 'Week $w of $year-$month should start on $dayName');
               }
             }
           }
@@ -211,4 +209,3 @@ void main() {
     });
   });
 }
-

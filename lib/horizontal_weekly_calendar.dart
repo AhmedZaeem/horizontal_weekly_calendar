@@ -1,0 +1,30 @@
+/// Adaptive, customizable horizontal calendar UI kit for Flutter.
+library;
+
+export 'src/controller/horizontal_calendar_controller.dart';
+export 'src/controller/calendar_event_coordinator.dart';
+export 'src/configuration/calendar_configuration.dart';
+export 'src/configuration/calendar_motion.dart';
+export 'src/domain/calendar_date_math.dart';
+export 'src/domain/calendar_event_layout.dart';
+export 'src/models/calendar_day_state.dart';
+export 'src/models/calendar_event.dart';
+export 'src/models/calendar_selection.dart';
+export 'src/models/calendar_visible_interval.dart';
+export 'src/theme/calendar_theme_resolver.dart';
+export 'src/theme/horizontal_calendar_theme.dart';
+export 'src/widgets/horizontal_calendar.dart';
+export 'src/widgets/calendar_components.dart';
+export 'src/widgets/calendar_event_consumer.dart';
+export 'src/widgets/calendar_agenda.dart';
+export 'src/widgets/calendar_date_carousel.dart';
+export 'src/widgets/calendar_date_indicators.dart';
+export 'src/widgets/calendar_cupertino_picker.dart';
+export 'src/widgets/celestial_date_picker.dart';
+export 'src/widgets/calendar_date_surfaces.dart';
+export 'src/widgets/calendar_insights.dart';
+export 'src/widgets/calendar_home_widget.dart';
+export 'src/widgets/calendar_native.dart';
+export 'src/widgets/calendar_timeline.dart';
+export 'src/widgets/month_calendar.dart';
+export 'src/widgets/foldable_calendar.dart';
