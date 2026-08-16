@@ -1,0 +1,107 @@
+name: release
+
+# Every merge into main is considered for release. A merge only releases when
+# the version in pubspec.yaml has not been tagged yet, so documentation and
+# fix merges pass through without doing anything. Bump the version in the same
+# pull request as the change and merging it ships that version.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  decide:
+    name: decide
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+      release: ${{ steps.resolve.outputs.release }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: resolve
+        name: resolve version
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version="$(sed -n 's/^version:[[:space:]]*//p' pubspec.yaml \
+            | head -n1 | tr -d '[:space:]')"
+          if [ -z "$version" ]; then
+            echo "::error file=pubspec.yaml::no version field found"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+          if git ls-remote --exit-code --tags origin "refs/tags/v$version" \
+            >/dev/null 2>&1; then
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            echo "### No release" >> "$GITHUB_STEP_SUMMARY"
+            echo "\`v$version\` is already tagged. Bump \`version:\` in" \
+              "pubspec.yaml to ship a new release." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "release=true" >> "$GITHUB_OUTPUT"
+            echo "### Releasing v$version" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  verify:
+    name: verify
+    needs: decide
+    if: needs.decide.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed .
+      - run: flutter analyze
+      - run: flutter test
+
+      - name: changelog mentions this version
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ needs.decide.outputs.version }}"
+          if ! grep -qF "[$version]" CHANGELOG.md; then
+            echo "::error file=CHANGELOG.md::no entry for [$version]"
+            exit 1
+          fi
+
+      - run: flutter pub publish --dry-run
+
+  tag:
+    name: tag
+    needs: [decide, verify]
+    if: needs.decide.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # Tagging is what actually triggers publish.yml. Keeping it in its own
+      # job means a failing test never produces a tag, and a tag is therefore
+      # always something that passed the full suite.
+      - name: tag v${{ needs.decide.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ needs.decide.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "v$version" -m "v$version"
+          git push origin "v$version"

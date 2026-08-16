@@ -1,0 +1,55 @@
+name: publish
+
+# Publishing is driven by the tag that release.yml creates, never directly by a
+# branch push. pub.dev verifies the tag against the pattern configured on the
+# package, so the tag is the thing it trusts.
+#
+# One-time setup on pub.dev, under the package's Admin tab → Automated
+# publishing → Enable publishing from GitHub Actions:
+#
+#   Repository:    AhmedZaeem/horizontal_weekly_calendar
+#   Tag pattern:   v{{version}}
+#
+# Until that is enabled this workflow will fail at the publish step, which is
+# the intended behaviour: nothing can reach pub.dev without the package owner
+# having opted in.
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+[-+]*'
+
+jobs:
+  publish:
+    name: publish to pub.dev
+    runs-on: ubuntu-latest
+    environment: pub.dev
+    permissions:
+      # Lets pub exchange a short-lived GitHub OIDC token for a pub.dev
+      # credential, so no long-lived secret is stored in the repository.
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      - name: tag matches pubspec version
+        shell: bash
+        run: |
+          set -euo pipefail
+          tagged="${GITHUB_REF_NAME#v}"
+          declared="$(sed -n 's/^version:[[:space:]]*//p' pubspec.yaml \
+            | head -n1 | tr -d '[:space:]')"
+          if [ "$tagged" != "$declared" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match pubspec" \
+              "version $declared"
+            exit 1
+          fi
+
+      - run: flutter pub publish --dry-run
+      - run: flutter pub publish --force
