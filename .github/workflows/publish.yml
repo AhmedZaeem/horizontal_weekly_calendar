@@ -51,5 +51,7 @@ jobs:
             exit 1
           fi
 
-      - run: flutter pub publish --dry-run
+      - name: package dry run
+        run: .github/scripts/publish_dry_run.sh
+
       - run: flutter pub publish --force

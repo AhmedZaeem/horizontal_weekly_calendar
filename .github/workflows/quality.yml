@@ -17,7 +17,8 @@ jobs:
       - run: dart format --output=none --set-exit-if-changed .
       - run: flutter analyze
       - run: flutter test
-      - run: flutter pub publish --dry-run
+      - name: package dry run
+        run: .github/scripts/publish_dry_run.sh
       - run: flutter pub get
         working-directory: example
       - run: flutter analyze

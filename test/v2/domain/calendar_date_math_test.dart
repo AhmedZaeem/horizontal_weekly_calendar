@@ -88,15 +88,26 @@ void main() {
     test('generates every month from 1900 through 2100 without gaps', () {
       for (var year = 1900; year <= 2100; year++) {
         for (var month = 1; month <= 12; month++) {
-          final count = DateTime(year, month + 1, 0).day;
+          final count = CalendarDateMath.daysInMonth(year, month);
           final days =
               CalendarDateMath.days(DateTime(year, month, 1, 18), count);
 
           expect(days, hasLength(count));
-          expect(days.toSet(), hasLength(count));
           for (var index = 0; index < days.length; index++) {
-            expect(days[index], DateTime(year, month, index + 1));
+            // Compared by civil identity rather than by DateTime equality:
+            // a zone can have no instant at all on a given civil date —
+            // Pacific/Apia skipped 2011-12-30 when it crossed the date line —
+            // so `DateTime(year, month, day)` is not a sound expectation.
+            final date = days[index];
+            expect(date.year, year, reason: 'year of $year-$month day $index');
+            expect(date.month, month, reason: 'month of $year-$month');
+            expect(date.day, index + 1, reason: 'day of $year-$month');
           }
+          expect(
+            days.map(CalendarDateMath.dayNumber).toSet(),
+            hasLength(count),
+            reason: 'duplicate civil dates in $year-$month',
+          );
         }
       }
     });
