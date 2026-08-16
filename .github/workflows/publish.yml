@@ -32,6 +32,10 @@ jobs:
     name: publish to pub.dev
     runs-on: ubuntu-latest
     environment: pub.dev
+    # Without a credential pub falls back to an interactive sign-in and waits
+    # on stdin, which on a runner means hanging until the six-hour default.
+    # stdin is closed below so it fails instead; this is the backstop.
+    timeout-minutes: 15
     permissions:
       # Lets pub exchange a short-lived GitHub OIDC token for a pub.dev
       # credential, so no long-lived secret is stored in the repository.
@@ -62,4 +66,7 @@ jobs:
       - name: package dry run
         run: .github/scripts/publish_dry_run.sh
 
-      - run: flutter pub publish --force
+      # stdin is closed so that a missing credential surfaces as an immediate
+      # error rather than an interactive prompt nobody can answer.
+      - name: publish
+        run: flutter pub publish --force < /dev/null
