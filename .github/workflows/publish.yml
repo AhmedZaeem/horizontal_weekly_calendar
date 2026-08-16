@@ -13,11 +13,19 @@ name: publish
 # Until that is enabled this workflow will fail at the publish step, which is
 # the intended behaviour: nothing can reach pub.dev without the package owner
 # having opted in.
+#
+# These are GitHub filter patterns, not regular expressions: `+` means "one or
+# more of the preceding character" and `[]` is a character range. A range may
+# not begin with `-`, which is why the prerelease suffix is matched with a
+# literal `-` followed by `*` rather than a character class.
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
-      - 'v[0-9]+.[0-9]+.[0-9]+[-+]*'
+      - 'v[0-9]+.[0-9]+.[0-9]+'      # v2.0.0
+      - 'v[0-9]+.[0-9]+.[0-9]+-*'    # v2.0.0-beta.1
+  # Lets a release be re-published from its existing tag, without having to
+  # delete and recreate the tag to fire the push trigger again.
+  workflow_dispatch:
 
 jobs:
   publish:
