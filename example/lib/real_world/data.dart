@@ -331,6 +331,62 @@ Set<DateTime> get habitCompletedDates => {
         if (day % 4 != 0) DateTime(2026, 8, day),
     };
 
+/// Portable payload shared by the home-widget previews and the hero poster.
+///
+/// This is the exact object an application hands to `CalendarHomeWidgetBridge`,
+/// so the Flutter preview and the native widget always agree.
+CalendarHomeWidgetData get heroWidgetData => CalendarHomeWidgetData(
+      generatedAt: DateTime(2026, 8, 12, 7, 40),
+      selectedDate: demoToday,
+      title: 'Wednesday',
+      subtitle: 'Three things before lunch',
+      targetDate: DateTime(2026, 8, 24),
+      completedCount: 3,
+      totalCount: 5,
+      action: const CalendarHomeWidgetAction(
+        uri: 'glance://today',
+        label: 'Open Glance',
+      ),
+      events: [
+        CalendarHomeWidgetEvent(
+          id: 'standup',
+          title: 'Team standup',
+          subtitle: 'Product',
+          location: 'Zoom',
+          start: DateTime(2026, 8, 12, 9),
+          end: DateTime(2026, 8, 12, 9, 15),
+          colorValue: 0xFF7C6BFF,
+        ),
+        CalendarHomeWidgetEvent(
+          id: 'shoot',
+          title: 'Campaign shoot',
+          subtitle: 'Studio A',
+          location: 'Ground floor',
+          start: DateTime(2026, 8, 12, 9, 30),
+          end: DateTime(2026, 8, 12, 13),
+          colorValue: 0xFFEF6C4D,
+        ),
+        CalendarHomeWidgetEvent(
+          id: 'review',
+          title: 'Rough cut review',
+          subtitle: 'Editorial',
+          start: DateTime(2026, 8, 12, 14, 30),
+          end: DateTime(2026, 8, 12, 16),
+          colorValue: 0xFF4FD1E0,
+        ),
+      ],
+    );
+
+/// Portable theme shared by the home-widget previews and the hero poster.
+const CalendarHomeWidgetTheme heroWidgetTheme = CalendarHomeWidgetTheme(
+  surfaceStyle: CalendarHomeWidgetSurfaceStyle.gradient,
+  gradientColors: [Color(0xFF241C4A), Color(0xFF0E1020)],
+  accentColor: Color(0xFF9F8CFF),
+  cornerRadius: 26,
+  eventStyle: CalendarHomeWidgetEventStyle.card,
+  progressStyle: CalendarHomeWidgetProgressStyle.segmented,
+);
+
 /// Sleep summary metrics for the insights dashboard.
 List<CalendarInsightMetric<Booking>> get habitMetrics => [
       CalendarInsightMetric(

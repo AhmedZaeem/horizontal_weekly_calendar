@@ -23,8 +23,8 @@ screenshots:
     path: doc/screenshots/08-habit-streaks.png
   - description: Home-screen widget families from one payload.
     path: doc/screenshots/12-home-widgets.png
-  - description: Week that folds into a month under a vertical drag.
-    path: doc/screenshots/14-journal-month.png
+  - description: Widget families on a phone home screen.
+    path: doc/screenshots/15-home-screen.png
 
 environment:
   sdk: '>=3.5.0 <4.0.0'

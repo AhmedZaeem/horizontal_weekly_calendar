@@ -21,7 +21,28 @@ void main() {
         reason: 'missing catalogue entry for ${example.id}',
       );
     }
-    expect(realWorldRoutes.length, realWorldExamples.length);
+    // Every catalogue entry has a route, plus the two capture-only surfaces
+    // that render the README artwork.
+    for (final example in realWorldExamples) {
+      expect(realWorldRoutes, contains(example.route));
+    }
+    expect(realWorldRoutes, contains('/hero'));
+    expect(realWorldRoutes, contains('/home-screen'));
+  });
+
+  testWidgets('the capture surfaces build', (tester) async {
+    tester.view.physicalSize = const Size(1032, 1376);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    for (final route in ['/hero', '/home-screen']) {
+      await tester.pumpWidget(
+        MaterialApp(home: Builder(builder: realWorldRoutes[route]!)),
+      );
+      await tester.pumpAndSettle(const Duration(seconds: 1));
+      expect(tester.takeException(), isNull, reason: 'route $route');
+    }
   });
 
   testWidgets('every example has a unique id and route', (tester) async {

@@ -257,6 +257,57 @@ void main() {
     });
   });
 
+  group('CalendarHomeWidget layout', () {
+    testWidgets('adopts a natural height when the parent gives none',
+        (tester) async {
+      // A system widget is normally handed a fixed box, but a preview is often
+      // dropped straight into a scroll view.
+      await tester.pumpWidget(_app(
+        ListView(
+          children: [
+            for (final family in CalendarHomeWidgetFamily.values)
+              CalendarHomeWidget(
+                data: _widgetData,
+                family: family,
+                content: CalendarHomeWidgetContent.week,
+              ),
+          ],
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      for (final family in CalendarHomeWidgetFamily.values) {
+        expect(
+          find.byType(CalendarHomeWidget),
+          findsWidgets,
+          reason: 'family $family should render',
+        );
+      }
+    });
+
+    testWidgets('still fills a bounded box exactly', (tester) async {
+      await tester.pumpWidget(_app(
+        SizedBox(
+          width: 320,
+          height: 150,
+          child: CalendarHomeWidget(
+            data: _widgetData,
+            family: CalendarHomeWidgetFamily.medium,
+            content: CalendarHomeWidgetContent.week,
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(
+        tester.getSize(find.byType(CalendarHomeWidget)),
+        const Size(320, 150),
+      );
+    });
+  });
+
   group('CalendarCupertinoDatePicker configuration', () {
     testWidgets('weekday labels outside date mode degrade instead of throwing',
         (tester) async {
@@ -297,3 +348,20 @@ void main() {
 }
 
 Widget _app(Widget child) => MaterialApp(home: Scaffold(body: child));
+
+CalendarHomeWidgetData get _widgetData => CalendarHomeWidgetData(
+      generatedAt: DateTime(2026, 8, 12, 8),
+      selectedDate: DateTime(2026, 8, 12),
+      title: 'Wednesday',
+      targetDate: DateTime(2026, 8, 24),
+      completedCount: 3,
+      totalCount: 5,
+      events: [
+        CalendarHomeWidgetEvent(
+          id: 'standup',
+          title: 'Team standup',
+          start: DateTime(2026, 8, 12, 9),
+          end: DateTime(2026, 8, 12, 9, 15),
+        ),
+      ],
+    );

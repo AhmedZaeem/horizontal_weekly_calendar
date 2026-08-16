@@ -9,11 +9,12 @@ all sharing one date engine and one set of design tokens.
 [![likes](https://img.shields.io/pub/likes/horizontal_weekly_calendar)](https://pub.dev/packages/horizontal_weekly_calendar)
 [![license](https://img.shields.io/github/license/AhmedZaeem/horizontal_weekly_calendar)](LICENSE)
 
-![Week strip with activity indicators and a day summary](doc/screenshots/01-training-week.png)
+![horizontal_weekly_calendar — every calendar your product needs](doc/hero.png)
 
 **Contents** — [Quick start](#quick-start) · [Every surface, with screenshots](#every-surface)
-· [Correct dates](#correct-dates) · [Size](#size) · [Theming](#theming)
-· [Motion](#motion) · [Selection](#selection) · [Events](#events)
+· [Home-screen widgets](#home-screen-widgets) · [Correct dates](#correct-dates)
+· [Size](#size) · [Theming](#theming) · [Motion](#motion)
+· [Selection](#selection) · [Events](#events)
 · [Accessibility](#accessibility) · [Upgrading from 1.x](#upgrading-from-1x)
 
 ---
@@ -321,29 +322,6 @@ CelestialDatePicker(
 
 *Example id: `sleep-log`*
 
-### Home-screen widgets — `CalendarHomeWidget`, `CalendarHomeWidgetBridge`
-
-One serializable payload rendered across every widget family, and pushed to the
-Android or iOS system widget through the bridge.
-
-![Home-screen widget families rendered from one payload](doc/screenshots/12-home-widgets.png)
-
-```dart
-CalendarHomeWidget(
-  data: CalendarHomeWidgetData(
-    generatedAt: DateTime.now(),
-    selectedDate: DateTime.now(),
-    title: 'Wednesday',
-    events: [/* CalendarHomeWidgetEvent(...) */],
-  ),
-  family: CalendarHomeWidgetFamily.medium,
-  content: CalendarHomeWidgetContent.week,
-)
-```
-
-See the [home-screen widget guide](doc/home_screen_widgets.md).
-*Example id: `home-widgets`*
-
 ### Also included
 
 `CalendarDateRail`, `CalendarScheduleRibbon`, `CalendarMilestoneTimeline`,
@@ -352,6 +330,112 @@ pieces `CalendarHeader`, `CalendarDayCell`, `CalendarEventMarker`,
 `CalendarEventTile`, `CalendarNowIndicator`, `CalendarFoldHandle`.
 
 ![Catalogue of the thirteen example screens](doc/screenshots/00-index.png)
+
+---
+
+## Home-screen widgets
+
+Most calendar packages stop at the app. This one also renders the widget that
+sits on the phone's home and lock screen, from the same events you already
+pass to the calendar.
+
+![Small, medium and large widget families on a phone home screen](doc/screenshots/15-home-screen.png)
+
+Three pieces do the work:
+
+| | |
+|---|---|
+| `CalendarHomeWidgetData` | A versioned, serializable payload — date, events, countdown, progress, locale, clock preference, deep link. This is the contract between Flutter and the system widget. |
+| `CalendarHomeWidget` | Renders that payload **inside Flutter**, for previews, settings screens, screenshots, and tests. |
+| `CalendarHomeWidgetBridge` | Saves the payload to shared storage and asks the native widgets to refresh. |
+
+### 1. Build the payload
+
+```dart
+final data = CalendarHomeWidgetData(
+  generatedAt: DateTime.now(),
+  selectedDate: DateTime.now(),
+  title: 'Wednesday',
+  subtitle: 'Three things before lunch',
+  targetDate: DateTime(2026, 8, 24),   // drives the countdown family
+  completedCount: 3,                   // drives the progress family
+  totalCount: 5,
+  action: const CalendarHomeWidgetAction(
+    uri: 'glance://today',             // where a tap should land
+    label: 'Open Glance',
+  ),
+  events: meetings.map((meeting) => CalendarHomeWidgetEvent(
+    id: meeting.id,
+    title: meeting.title,
+    subtitle: meeting.team,
+    location: meeting.room,
+    start: meeting.start,
+    end: meeting.end,
+    colorValue: meeting.colour.toARGB32(),
+  )).toList(),
+);
+```
+
+### 2. Preview it in the app
+
+Let people see and configure the widget before they add it — the preview is
+the real renderer, so what they pick is what they get.
+
+```dart
+CalendarHomeWidget(
+  data: data,
+  family: CalendarHomeWidgetFamily.medium,   // small · medium · large
+                                             // extraLarge · compact · accessory
+  content: CalendarHomeWidgetContent.week,   // today · week · agenda
+                                             // countdown · progress
+  theme: const CalendarHomeWidgetTheme(
+    surfaceStyle: CalendarHomeWidgetSurfaceStyle.gradient,
+    gradientColors: [Color(0xFF241C4A), Color(0xFF0E1020)],
+    accentColor: Color(0xFF9F8CFF),
+    eventStyle: CalendarHomeWidgetEventStyle.card,
+    progressStyle: CalendarHomeWidgetProgressStyle.segmented,
+  ),
+)
+```
+
+Given no bounded height — inside a `ListView`, say — the widget adopts the
+aspect its family occupies on a real home screen instead of failing layout.
+
+### 3. Push it to the system widget
+
+```dart
+final delivered = await const CalendarHomeWidgetBridge().update(
+  data,
+  configuration: CalendarHomeWidgetConfiguration(
+    family: CalendarHomeWidgetFamily.medium,
+    content: CalendarHomeWidgetContent.agenda,
+    theme: theme,
+  ),
+);
+// false on web, in tests, or wherever no native host is installed.
+```
+
+### The native side
+
+A Dart package cannot add a WidgetKit extension or an App Widget provider to
+your project, so the example ships complete, working implementations to copy:
+
+- **Android** — `CalendarHomeWidgetProvider`, three responsive `RemoteViews`
+  layouts, provider metadata, manifest registration, persistent JSON storage,
+  resize handling, and a deep link.
+- **iOS** — the full `CalendarWidgets` WidgetKit target: SwiftUI views for every
+  family, timeline provider, App Group entitlements, embed phase, and deep link.
+
+Both consume the same portable colour, header, weekday, event-detail, and
+visibility values. Effects a system widget cannot reproduce — Flutter blur,
+animated gradients — fall back to a readable solid colour.
+
+Full setup, including the bundle identifiers and App Group you need to replace,
+is in the [home-screen widget guide](doc/home_screen_widgets.md). The example's
+`/home-widget-studio` route exposes every token and can push the current
+configuration to the real system widget.
+
+*Example ids: `home-widgets`, plus the home-screen layout at `/home-screen`.*
 
 ---
 

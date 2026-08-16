@@ -87,6 +87,10 @@
 
 ### Example and documentation
 
+- `CalendarHomeWidget` adopts its family's natural aspect when a parent gives no
+  bounded height, instead of failing layout. Dropping a preview straight into a
+  scroll view now works.
+
 - Added thirteen real-world example screens under `example/lib/real_world/`,
   one per calendar surface, each wired to a typed application model, plus a
   catalogue at `/real-world` and a `CALENDAR_ROUTE` launch override.

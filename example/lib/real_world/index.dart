@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'hero.dart';
+import 'home_screen_showcase.dart';
 import 'screens_booking.dart';
 import 'screens_data.dart';
 import 'screens_native.dart';
@@ -159,9 +161,14 @@ final List<RealWorldExample> realWorldExamples = [
   ),
 ];
 
-/// Routes for every real-world example.
+/// Routes for every real-world example, plus the capture-only surfaces.
+///
+/// The poster and home-screen showcase exist to render the README artwork from
+/// live widgets, so the documentation cannot drift from the package.
 Map<String, WidgetBuilder> get realWorldRoutes => {
       for (final example in realWorldExamples) example.route: example.builder,
+      '/hero': (_) => const HeroPosterPage(),
+      '/home-screen': (_) => const HomeScreenShowcasePage(),
     };
 
 /// Catalogue of the real-world examples.

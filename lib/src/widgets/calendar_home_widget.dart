@@ -877,19 +877,50 @@ class CalendarHomeWidget extends StatelessWidget {
               ),
             ),
           );
+          // A system widget is always handed a fixed box. Inside a scroll view
+          // or an intrinsic-height parent there is no bounded height, so adopt
+          // the family's natural aspect instead of failing layout.
+          final sized = constraints.hasBoundedHeight
+              ? surface
+              : SizedBox(
+                  height: _unboundedHeightFor(resolvedFamily, constraints),
+                  child: surface,
+                );
           return Semantics(
             label: data.title ?? 'Calendar widget',
             button: onAction != null && data.action != null,
             child: data.action == null || onAction == null
-                ? surface
+                ? sized
                 : GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () => onAction!(data.action!),
-                    child: surface,
+                    child: sized,
                   ),
           );
         },
       );
+
+  /// Height used when the parent supplies no bounded height.
+  ///
+  /// Mirrors the aspect each family occupies on a home screen, clamped so a
+  /// very wide or very narrow parent still produces a usable surface.
+  static double _unboundedHeightFor(
+    CalendarHomeWidgetFamily family,
+    BoxConstraints constraints,
+  ) {
+    final width = constraints.hasBoundedWidth && constraints.maxWidth > 0
+        ? constraints.maxWidth
+        : 320.0;
+    final aspect = switch (family) {
+      CalendarHomeWidgetFamily.accessory => 6.0,
+      CalendarHomeWidgetFamily.compact => 2.6,
+      CalendarHomeWidgetFamily.small => 1.0,
+      CalendarHomeWidgetFamily.medium => 2.13,
+      CalendarHomeWidgetFamily.large => 1.05,
+      CalendarHomeWidgetFamily.extraLarge => 2.1,
+    };
+    return (width / aspect).clamp(48.0, 900.0);
+  }
 
   static BoxDecoration _surfaceDecoration(CalendarHomeWidgetTheme theme) {
     final colors = theme.gradientColors.length == 2
