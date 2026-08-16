@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.1] - 2026-08-16
+
+### Documentation
+
+- Made every README image and document link absolute. pub.dev renders a
+  package page from the published archive and drops relative image and link
+  targets entirely, so the screenshots, banner, and guide links that work on
+  GitHub were being stripped from the pub.dev page. They now point at
+  raw.githubusercontent.com and github.com, which renders correctly in both
+  places.
+
 ## [2.0.0] - 2026-08-10
 
 ### Date generation

@@ -7,9 +7,9 @@ all sharing one date engine and one set of design tokens.
 [![pub package](https://img.shields.io/pub/v/horizontal_weekly_calendar.svg)](https://pub.dev/packages/horizontal_weekly_calendar)
 [![pub points](https://img.shields.io/pub/points/horizontal_weekly_calendar)](https://pub.dev/packages/horizontal_weekly_calendar/score)
 [![likes](https://img.shields.io/pub/likes/horizontal_weekly_calendar)](https://pub.dev/packages/horizontal_weekly_calendar)
-[![license](https://img.shields.io/github/license/AhmedZaeem/horizontal_weekly_calendar)](LICENSE)
+[![license](https://img.shields.io/github/license/AhmedZaeem/horizontal_weekly_calendar)](https://github.com/AhmedZaeem/horizontal_weekly_calendar/blob/main/LICENSE)
 
-![horizontal_weekly_calendar — every calendar your product needs](doc/hero.png)
+![horizontal_weekly_calendar — every calendar your product needs](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/hero.png)
 
 **Contents** — [Quick start](#quick-start) · [Every surface, with screenshots](#every-surface)
 · [Home-screen widgets](#home-screen-widgets) · [Correct dates](#correct-dates)
@@ -23,7 +23,7 @@ all sharing one date engine and one set of design tokens.
 
 ```yaml
 dependencies:
-  horizontal_weekly_calendar: ^2.0.0
+  horizontal_weekly_calendar: ^2.0.1
 ```
 
 ```dart
@@ -73,7 +73,7 @@ cd example && flutter run --dart-define=CALENDAR_ROUTE=/real-world/<id>
 The flagship. A page of dates that fits its container is laid out edge to edge;
 drags move it under your finger and settle on a spring.
 
-![Training week built on the horizontal date strip](doc/screenshots/01-training-week.png)
+![Training week built on the horizontal date strip](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/01-training-week.png)
 
 ```dart
 HorizontalCalendar<Session>(
@@ -94,7 +94,7 @@ HorizontalCalendar<Session>(
 Rich date cards carrying your own metadata. Snaps one card at a time; the
 spotlight layout eases each card toward the viewport centre as you scroll.
 
-![Flight fares on the snapping date carousel](doc/screenshots/02-fare-carousel.png)
+![Flight fares on the snapping date carousel](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/02-fare-carousel.png)
 
 ```dart
 CalendarDateCarousel<Fare>(
@@ -119,7 +119,7 @@ CalendarDateCarousel<Fare>(
 A natural-height month, four to six rows, that always contains every day of the
 month exactly once.
 
-![Appointment booking on a month grid with availability rules](doc/screenshots/03-clinic-booking.png)
+![Appointment booking on a month grid with availability rules](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/03-clinic-booking.png)
 
 ```dart
 MonthCalendar<Slot>.single(
@@ -140,7 +140,7 @@ MonthCalendar<Slot>.single(
 Range, multiple, and single selection share one `CalendarSelection` object and
 one set of transition rules.
 
-![Stay dates chosen as a range with a live price breakdown](doc/screenshots/04-stay-range.png)
+![Stay dates chosen as a range with a live price breakdown](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/04-stay-range.png)
 
 ```dart
 HorizontalCalendar<Stay>.controlled(
@@ -161,7 +161,7 @@ HorizontalCalendar<Stay>.controlled(
 Overlapping bookings resolved into deterministic columns, with a current-time
 line that tracks the real clock and opens centred on now.
 
-![Single-day production call sheet on a timeline](doc/screenshots/05-studio-day.png)
+![Single-day production call sheet on a timeline](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/05-studio-day.png)
 
 ```dart
 DayTimeline<Booking>(
@@ -182,7 +182,7 @@ DayTimeline<Booking>(
 
 The same layout engine across up to fourteen day columns.
 
-![Seven-column field rota on a dark surface](doc/screenshots/06-shift-board.png)
+![Seven-column field rota on a dark surface](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/06-shift-board.png)
 
 ```dart
 WeekTimeline<Shift>(
@@ -204,9 +204,9 @@ One surface that interpolates its real height between a week strip and a month
 grid, so a vertical drag expands it continuously rather than swapping at the
 halfway mark.
 
-![Journal week strip, collapsed](doc/screenshots/13-journal-week.png)
+![Journal week strip, collapsed](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/13-journal-week.png)
 
-![The same journal folded open to the month](doc/screenshots/14-journal-month.png)
+![The same journal folded open to the month](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/14-journal-month.png)
 
 ```dart
 FoldableCalendar<Entry>.single(
@@ -226,7 +226,7 @@ FoldableCalendar<Entry>.single(
 Date-grouped events from a synchronous list or an async source, with loading,
 error, empty, and populated states handled for you.
 
-![Asynchronous parcel tracking history grouped by day](doc/screenshots/07-parcel-agenda.png)
+![Asynchronous parcel tracking history grouped by day](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/07-parcel-agenda.png)
 
 ```dart
 CalendarAgenda<Parcel>(
@@ -243,7 +243,7 @@ CalendarAgenda<Parcel>(
 
 ### Activity and streaks — `CalendarStreakStrip`, `CalendarContributionHeatmap`, `CalendarInsightsDashboard`
 
-![Habit streaks, a year heatmap, and derived signals](doc/screenshots/08-habit-streaks.png)
+![Habit streaks, a year heatmap, and derived signals](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/08-habit-streaks.png)
 
 ```dart
 CalendarStreakStrip(
@@ -264,7 +264,7 @@ CalendarContributionHeatmap(
 
 ### Countdown and progress — `CalendarCountdownCard`, `CalendarHeatmapStrip`, `CalendarWeekProgress`
 
-![Release countdown with a daily burn-down](doc/screenshots/09-release-countdown.png)
+![Release countdown with a daily burn-down](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/09-release-countdown.png)
 
 ```dart
 CalendarCountdownCard<Release>(
@@ -281,7 +281,7 @@ CalendarCountdownCard<Release>(
 
 Platform chrome and native wheels driven by the same tokens as everything else.
 
-![iOS-styled reminder flow with native wheels](doc/screenshots/10-native-reminder.png)
+![iOS-styled reminder flow with native wheels](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/10-native-reminder.png)
 
 ```dart
 CalendarCupertinoDatePicker(
@@ -307,7 +307,7 @@ final picked = await showAdaptiveCalendarPicker(
 A sun-and-moon horizon that scrubs dates by drag, for sleep, weather, and
 wellness products.
 
-![Sleep log built on the celestial date picker](doc/screenshots/11-sleep-log.png)
+![Sleep log built on the celestial date picker](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/11-sleep-log.png)
 
 ```dart
 CelestialDatePicker(
@@ -329,7 +329,7 @@ CelestialDatePicker(
 pieces `CalendarHeader`, `CalendarDayCell`, `CalendarEventMarker`,
 `CalendarEventTile`, `CalendarNowIndicator`, `CalendarFoldHandle`.
 
-![Catalogue of the thirteen example screens](doc/screenshots/00-index.png)
+![Catalogue of the thirteen example screens](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/00-index.png)
 
 ---
 
@@ -339,7 +339,7 @@ Most calendar packages stop at the app. This one also renders the widget that
 sits on the phone's home and lock screen, from the same events you already
 pass to the calendar.
 
-![Small, medium and large widget families on a phone home screen](doc/screenshots/15-home-screen.png)
+![Small, medium and large widget families on a phone home screen](https://raw.githubusercontent.com/AhmedZaeem/horizontal_weekly_calendar/main/doc/screenshots/15-home-screen.png)
 
 Three pieces do the work:
 
@@ -431,7 +431,7 @@ visibility values. Effects a system widget cannot reproduce — Flutter blur,
 animated gradients — fall back to a readable solid colour.
 
 Full setup, including the bundle identifiers and App Group you need to replace,
-is in the [home-screen widget guide](doc/home_screen_widgets.md). The example's
+is in the [home-screen widget guide](https://github.com/AhmedZaeem/horizontal_weekly_calendar/blob/main/doc/home_screen_widgets.md). The example's
 `/home-widget-studio` route exposes every token and can push the current
 configuration to the real system widget.
 
@@ -570,7 +570,7 @@ appearance: CalendarAppearance(motion: CalendarMotion.fluid()),
 ```
 
 Everything honours `MediaQuery.disableAnimations`. Full details in the
-[motion and gesture guide](doc/motion.md).
+[motion and gesture guide](https://github.com/AhmedZaeem/horizontal_weekly_calendar/blob/main/doc/motion.md).
 
 ---
 
@@ -670,17 +670,17 @@ Deprecated members carry direct replacements, so migration can happen screen by
 screen. New code should import
 `package:horizontal_weekly_calendar/horizontal_weekly_calendar.dart`.
 
-See the [2.0 migration guide](doc/migration_v2.md).
+See the [2.0 migration guide](https://github.com/AhmedZaeem/horizontal_weekly_calendar/blob/main/doc/migration_v2.md).
 
 ---
 
 ## Documentation
 
-- [Motion and gesture guide](doc/motion.md)
-- [2.0 migration guide](doc/migration_v2.md)
-- [Home-screen widget integration](doc/home_screen_widgets.md)
+- [Motion and gesture guide](https://github.com/AhmedZaeem/horizontal_weekly_calendar/blob/main/doc/motion.md)
+- [2.0 migration guide](https://github.com/AhmedZaeem/horizontal_weekly_calendar/blob/main/doc/migration_v2.md)
+- [Home-screen widget integration](https://github.com/AhmedZaeem/horizontal_weekly_calendar/blob/main/doc/home_screen_widgets.md)
 - [API reference](https://pub.dev/documentation/horizontal_weekly_calendar/latest/)
-- [Changelog](CHANGELOG.md)
+- [Changelog](https://github.com/AhmedZaeem/horizontal_weekly_calendar/blob/main/CHANGELOG.md)
 - [Issue tracker](https://github.com/AhmedZaeem/horizontal_weekly_calendar/issues)
 
 ## Contributing
@@ -696,4 +696,4 @@ covering those systems.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](https://github.com/AhmedZaeem/horizontal_weekly_calendar/blob/main/LICENSE).

@@ -1,6 +1,6 @@
 name: horizontal_weekly_calendar
 description: A beautiful, reliable, and fully customizable horizontal calendar UI kit for Flutter, with events, agendas, timelines, and foldable month views.
-version: 2.0.0
+version: 2.0.1
 homepage: https://github.com/AhmedZaeem/horizontal_weekly_calendar
 repository: https://github.com/AhmedZaeem/horizontal_weekly_calendar
 issue_tracker: https://github.com/AhmedZaeem/horizontal_weekly_calendar/issues
