@@ -79,8 +79,8 @@ void main() {
 
       final nextButton = find.byIcon(Icons.chevron_right);
       expect(nextButton, findsOneWidget);
-      final iconButton =
-          tester.widget<IconButton>(find.widgetWithIcon(IconButton, Icons.chevron_right));
+      final iconButton = tester.widget<IconButton>(
+          find.widgetWithIcon(IconButton, Icons.chevron_right));
       expect(iconButton.onPressed, isNull);
     });
 
@@ -103,8 +103,8 @@ void main() {
 
       final prevButton = find.byIcon(Icons.chevron_left);
       expect(prevButton, findsOneWidget);
-      final iconButton =
-          tester.widget<IconButton>(find.widgetWithIcon(IconButton, Icons.chevron_left));
+      final iconButton = tester.widget<IconButton>(
+          find.widgetWithIcon(IconButton, Icons.chevron_left));
       expect(iconButton.onPressed, isNull);
     });
 
@@ -432,4 +432,3 @@ void main() {
     });
   });
 }
-

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../weekly_calendar.dart';
 
 /// A builder function type for creating a custom header widget for the weekly calendar.
+@Deprecated('Use the v2 calendar header builder instead.')
 typedef TableWeeklyCalendarHeaderBuilder = Widget Function(
     BuildContext context,
     DateTime currentDate,
@@ -11,6 +12,7 @@ typedef TableWeeklyCalendarHeaderBuilder = Widget Function(
     VoidCallback onNextMonth);
 
 /// Represents a date with an associated color to highlight or focus it in the calendar.
+@Deprecated('Use CalendarSelection and HorizontalCalendarThemeData instead.')
 class FocusDate {
   /// The date to be focused or highlighted.
   final DateTime date;
@@ -22,6 +24,7 @@ class FocusDate {
   final Color foregroundColor;
 
   /// Creates a [FocusDate] with the given [date], [backgroundColor], and [foregroundColor].
+  @Deprecated('Use CalendarSelection and a v2 day builder instead.')
   const FocusDate({
     required this.date,
     required this.backgroundColor,
@@ -30,6 +33,7 @@ class FocusDate {
 }
 
 /// A widget that displays a table-based weekly calendar with customizable styles, focus dates, and navigation.
+@Deprecated('Use the v2 MonthCalendar widget instead.')
 class TableWeeklyCalendar extends StatefulWidget {
   /// The initial date to display when the calendar is first shown.
   final DateTime initialDate;
@@ -92,6 +96,7 @@ class TableWeeklyCalendar extends StatefulWidget {
   final DateTime? maxDate;
 
   /// Creates a [TableWeeklyCalendar] widget.
+  @Deprecated('Use the v2 MonthCalendar widget instead.')
   const TableWeeklyCalendar({
     super.key,
     required this.initialDate,
@@ -381,8 +386,8 @@ class _TableWeeklyCalendarState extends State<TableWeeklyCalendar> {
                                   decoration: BoxDecoration(
                                     color: backgroundColor,
                                     shape: BoxShape.circle,
-                                    border: widget
-                                        .calendarStyle.dayIndicatorBorder,
+                                    border:
+                                        widget.calendarStyle.dayIndicatorBorder,
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(

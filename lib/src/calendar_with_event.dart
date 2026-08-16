@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import '../weekly_calendar.dart';
 
 /// Represents an event in the calendar with its properties.
+@Deprecated(
+    'Use CalendarEvent<T> from horizontal_weekly_calendar.dart instead.')
 class CalendarEvent {
   /// Unique identifier for the event.
   final String id;
@@ -24,6 +26,8 @@ class CalendarEvent {
   final Color textColor;
 
   /// Creates a calendar event with the specified properties.
+  @Deprecated(
+      'Use CalendarEvent<T> from horizontal_weekly_calendar.dart instead.')
   const CalendarEvent({
     required this.id,
     required this.title,
@@ -35,6 +39,8 @@ class CalendarEvent {
 }
 
 /// Style configuration for the event calendar, allowing customization of appearance.
+@Deprecated(
+    'Use HorizontalCalendarThemeData and timeline theme tokens instead.')
 class EventCalendarStyle {
   /// Height of each time slot in the calendar.
   final double timeSlotHeight;
@@ -124,6 +130,8 @@ class EventCalendarStyle {
   final double overlappingEventMargin;
 
   /// Creates a style configuration for the event calendar.
+  @Deprecated(
+      'Use HorizontalCalendarThemeData and timeline theme tokens instead.')
   const EventCalendarStyle({
     this.timeSlotHeight = 60.0,
     this.hourSlotHeight = 60.0,
@@ -160,6 +168,7 @@ class EventCalendarStyle {
 }
 
 /// A calendar widget that displays events for each day of the week.
+@Deprecated('Use the v2 WeekTimeline widget instead.')
 class EventCalendar extends StatefulWidget {
   /// The currently displayed month in the calendar.
   final DateTime currentMonth;
@@ -201,6 +210,7 @@ class EventCalendar extends StatefulWidget {
   final DateTime? maxDate;
 
   /// Creates a calendar widget that displays events for each day of the week.
+  @Deprecated('Use the v2 WeekTimeline widget instead.')
   const EventCalendar({
     super.key,
     required this.currentMonth,
@@ -436,7 +446,8 @@ class _EventCalendarState extends State<EventCalendar> {
     return a.startTime.isBefore(b.endTime) && b.startTime.isBefore(a.endTime);
   }
 
-  List<List<CalendarEvent>> _groupOverlappingEvents(List<CalendarEvent> events) {
+  List<List<CalendarEvent>> _groupOverlappingEvents(
+      List<CalendarEvent> events) {
     if (events.isEmpty) return [];
 
     final sortedEvents = List<CalendarEvent>.from(events)
@@ -464,7 +475,8 @@ class _EventCalendarState extends State<EventCalendar> {
     for (final group in groups) {
       bool merged = false;
       for (final mergedGroup in mergedGroups) {
-        if (group.any((e1) => mergedGroup.any((e2) => _eventsOverlap(e1, e2)))) {
+        if (group
+            .any((e1) => mergedGroup.any((e2) => _eventsOverlap(e1, e2)))) {
           mergedGroup.addAll(group);
           merged = true;
           break;
@@ -496,7 +508,8 @@ class _EventCalendarState extends State<EventCalendar> {
 
       for (int i = 0; i < group.length; i++) {
         final event = group[i];
-        final rect = _calculateEventRect(event, dayWidth, widget.style.timeSlotHeight);
+        final rect =
+            _calculateEventRect(event, dayWidth, widget.style.timeSlotHeight);
         final left = i * (eventWidth + margin);
 
         events.add(

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'calendar_utils.dart';
 
 /// Defines visual variations of the horizontal calendar
+@Deprecated('Use CalendarStyle with HorizontalCalendar instead.')
 enum HorizontalCalendarType {
   /// Default circular day indicators
   standard,
@@ -19,6 +20,7 @@ enum HorizontalCalendarType {
 }
 
 /// Represents days of the week with ISO 8601 numbering (Monday = 1)
+@Deprecated('Use DateTime weekday constants with HorizontalCalendar instead.')
 enum Weekday {
   /// Sets the first day of the week to monday
   monday(1),
@@ -52,6 +54,7 @@ enum Weekday {
 }
 
 /// Contains all visual styling parameters for the calendar
+@Deprecated('Use HorizontalCalendarThemeData instead.')
 class HorizontalCalendarStyle {
   /// Style for month/year header text
   final TextStyle monthHeaderStyle;
@@ -99,6 +102,7 @@ class HorizontalCalendarStyle {
   final Color disabledDayColor;
 
   /// Creates a style configuration for the calendar
+  @Deprecated('Use HorizontalCalendarThemeData instead.')
   const HorizontalCalendarStyle({
     this.monthHeaderStyle =
         const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -122,6 +126,7 @@ class HorizontalCalendarStyle {
 }
 
 /// A horizontally scrollable weekly calendar widget with multiple visual styles
+@Deprecated('Use HorizontalCalendar instead.')
 class HorizontalWeeklyCalendar extends StatefulWidget {
   /// Initial displayed month
   final DateTime initialDate;
@@ -175,6 +180,7 @@ class HorizontalWeeklyCalendar extends StatefulWidget {
   final DateTime? maxDate;
 
   /// Default constructor for standard calendar
+  @Deprecated('Use HorizontalCalendar instead.')
   const HorizontalWeeklyCalendar({
     super.key,
     required this.initialDate,
@@ -197,6 +203,7 @@ class HorizontalWeeklyCalendar extends StatefulWidget {
   });
 
   /// Preconfigured constructor for outlined variant
+  @Deprecated('Use HorizontalCalendar with a custom theme instead.')
   const HorizontalWeeklyCalendar.outlined({
     super.key,
     required this.initialDate,
@@ -218,6 +225,7 @@ class HorizontalWeeklyCalendar extends StatefulWidget {
   }) : calendarType = HorizontalCalendarType.outlined;
 
   /// Preconfigured constructor for minimal variant
+  @Deprecated('Use HorizontalCalendar with CalendarStyle.neutral instead.')
   const HorizontalWeeklyCalendar.minimal({
     super.key,
     required this.initialDate,
@@ -542,8 +550,8 @@ class _HorizontalWeeklyCalendarState extends State<HorizontalWeeklyCalendar>
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: _weeks[index].map((day) {
                         final isSelected = isSameDay(day, widget.selectedDate);
-                        final isDisabled = isDateDisabled(
-                            day, widget.minDate, widget.maxDate);
+                        final isDisabled =
+                            isDateDisabled(day, widget.minDate, widget.maxDate);
                         return SizedBox(
                           width: dayWidth,
                           child: GestureDetector(

@@ -1,0 +1,61 @@
+name: quality
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed .
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter pub publish --dry-run
+      - run: flutter pub get
+        working-directory: example
+      - run: flutter analyze
+        working-directory: example
+      - run: flutter test
+        working-directory: example
+      - run: flutter build web --release
+        working-directory: example
+
+  dates:
+    name: date generation (${{ matrix.tz }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Zones chosen for the ways they break naive date arithmetic:
+        # Apia and Kiritimati each skipped a calendar date outright when they
+        # crossed the international date line; Santiago, Havana and Tehran
+        # begin daylight saving at 00:00, so those dates have no local
+        # midnight; Lord Howe shifts by 30 minutes; Chatham by 45.
+        tz:
+          - UTC
+          - Pacific/Apia
+          - Pacific/Kiritimati
+          - America/Santiago
+          - America/Havana
+          - America/Sao_Paulo
+          - Asia/Tehran
+          - Australia/Lord_Howe
+          - Pacific/Chatham
+          - America/New_York
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter test test/v2/domain
+        env:
+          TZ: ${{ matrix.tz }}

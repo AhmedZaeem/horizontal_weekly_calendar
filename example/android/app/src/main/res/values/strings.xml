@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Calendar UI Kit</string>
+    <string name="calendar_widget_description">Responsive calendar, agenda, and next-event home widget</string>
+</resources>
