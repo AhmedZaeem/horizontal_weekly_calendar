@@ -66,7 +66,31 @@ jobs:
       - name: package dry run
         run: .github/scripts/publish_dry_run.sh
 
-      # stdin is closed so that a missing credential surfaces as an immediate
-      # error rather than an interactive prompt nobody can answer.
+      # Without a usable credential pub does not merely prompt on stdin: it
+      # falls back to the browser OAuth flow, which opens a local callback
+      # listener and waits on it forever. Closing stdin cannot interrupt that,
+      # so the token is checked up front and the command is bounded.
+      - name: check OIDC is available
+        run: |
+          set -euo pipefail
+          if [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]; then
+            echo "::error::No GitHub OIDC token. The job needs" \
+              "'permissions: id-token: write'."
+            exit 1
+          fi
+          echo "OIDC token endpoint present."
+
       - name: publish
-        run: flutter pub publish --force < /dev/null
+        run: |
+          set -uo pipefail
+          timeout 300 flutter pub publish --force < /dev/null
+          status=$?
+          if [ "$status" -eq 124 ]; then
+            echo "::error title=Publish timed out::pub fell back to interactive" \
+              "sign-in, which means pub.dev did not accept the OIDC token." \
+              "Check that Automated publishing on pub.dev has the Repository" \
+              "field set to ${GITHUB_REPOSITORY} and that the trigger used" \
+              "here (${GITHUB_EVENT_NAME}) is enabled there."
+            exit 1
+          fi
+          exit "$status"
